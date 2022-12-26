@@ -24,7 +24,7 @@ const Homescreen = () => {
   const [Header, setHeader] = useState('');
   const navigation = useNavigation();
 
-  console.log('Header ', Header);
+  // console.log('Header ', Header);
 
   const isFocuse = useIsFocused();
 
@@ -51,22 +51,22 @@ const Homescreen = () => {
           const data = querySnapshot?.docs?.map(snp => {
             return snp?.data();
           });
-          console.log('data', data);
+          // console.log('data', data);
           setUserData(data);
         });
     } else {
       console.log('User not available');
     }
   };
-  console.log('useer', userData);
-  console.log('activeUser', activeUser);
+  // console.log('useer', userData);
+  // console.log('activeUser', activeUser);
 
   useEffect(() => {
     auth().onAuthStateChanged(onAuthStateChanged);
   }, [isFocuse]);
 
   const onItemPress = item => {
-    console.log('item', item);
+    // console.log('item', item);
     navigation.navigate('Chatescreen', {
       item: item,
       curentUserID: activeUser,
@@ -85,7 +85,6 @@ const Homescreen = () => {
         <FlatList
           data={userData}
           renderItem={({item}) => {
-            console.log('Item', item?.lastmessage[0]);
             return (
               <View>
                 <TouchableOpacity
@@ -100,6 +99,7 @@ const Homescreen = () => {
                     </View>
                     <View>
                       <Text style={style.listUserName}>{item?.name}</Text>
+                      {item?.lastmessage ? <>
                       {item?.lastmessage[0]?.image === '' ? (
                         <Text style={{marginLeft: 30, marginTop: 2}}>
                           {item?.lastmessage[0]?.text}
@@ -117,11 +117,12 @@ const Homescreen = () => {
                           <Text style={{marginLeft: 5}}>Photo</Text>
                         </View>
                       )}
+                      </> : <></>}
                     </View>
                   </View>
-                  <View style={{marginTop: 5}}>
+                  {item?.lastmessage ? <View style={{marginTop: 5}}>
                     <Text>{moment(item?.lastmessage[0]?.createdAt).format( 'DD MMM YYYY')}</Text>
-                  </View>
+                  </View> : <></>}
                 </TouchableOpacity>
               </View>
             );

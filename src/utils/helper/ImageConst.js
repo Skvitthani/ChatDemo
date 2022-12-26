@@ -20,4 +20,5 @@ export const ImageConst = {
   camera: require('/Users/mac/Documents/Chatedemo/asset/Image/photo-camera-interface-symbol-for-button.png'),
   gallery_png: require('/Users/mac/Documents/Chatedemo/asset/Image/gallery.png'),
   send_message_png: require('/Users/mac/Documents/Chatedemo/asset/Image/send-message.png'),
+  zoom_png: require('/Users/mac/Documents/Chatedemo/asset/Image/zoom.png'),
 };

@@ -10,6 +10,8 @@ import Creategroup from '../screen/Creategroup';
 import Tabnavigate from './Tabnavigate';
 import Userlistscreen from '../screen/Userlistscreen';
 import Notificationscreen from '../screen/Notificationscreen';
+import Voicecallscreen from '../screen/Voicecallscreen';
+import Videocallscreen from '../screen/Videocallscreen';
 
 const stack = createNativeStackNavigator();
 
@@ -55,6 +57,16 @@ const Navigate = () => {
         <stack.Screen
           name="Notificationscreen"
           component={Notificationscreen}
+          options={{headerShown: false}}
+        />
+        <stack.Screen
+          name="Voicecallscreen"
+          component={Voicecallscreen}
+          options={{headerShown: false}}
+        />
+        <stack.Screen
+          name="Videocallscreen"
+          component={Videocallscreen}
           options={{headerShown: false}}
         />
       </stack.Navigator>

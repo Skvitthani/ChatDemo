@@ -35,12 +35,12 @@ const Chatescreen = ({route, navigation}) => {
   const group = route?.params?.groupData;
   // const curentUserID = route?.params?.onGroupcurentUserID;
   const UID = group?.id;
-  console.log('group===>', group);
-  console.log('ID===>', UID);
-  console.log('itemsitems==', items);
-  console.log('currentUsercurrentUser', currentUser);
-  console.log('curentUserID', curentUserID);
-  console.log('reciverUID', reciverUID);
+  // console.log('group===>', group);
+  // console.log('ID===>', UID);
+  // console.log('itemsitems==', items);
+  // console.log('currentUsercurrentUser', currentUser);
+  // console.log('curentUserID', curentUserID);
+  // console.log('reciverUID', reciverUID);
 
   const [messages, setMessages] = useState([]);
   const [showChatScreen, setShowChatScreen] = useState(true);
@@ -48,9 +48,9 @@ const Chatescreen = ({route, navigation}) => {
   const [openModel, setOpenModel] = useState(false);
   const [image, setImage] = useState('');
   const [ImageUrl, setImageUrl] = useState('');
-  const [lastMessage, setLastMessage] = useState('');
-  const [groupLastMessage, setGroupLastMessage] = useState('');
-  console.log('image Url===>', ImageUrl);
+  const [lastMessage, setLastMessage] = useState([]);
+  const [groupLastMessage, setGroupLastMessage] = useState([]);
+  // console.log('image Url===>', ImageUrl);
 
   useEffect(() => {
     if (group) {
@@ -63,7 +63,7 @@ const Chatescreen = ({route, navigation}) => {
         const message = snp.docs.map(snap => {
           return {...snap.data(), createdAt: new Date()};
         });
-        console.log('messagemessage', message);
+        // console.log('messagemessage', message);
         setMessages(message);
       });
       const snp = firestore()
@@ -72,12 +72,12 @@ const Chatescreen = ({route, navigation}) => {
         .collection('Message')
         .orderBy('createdAt', 'desc')
         .limit(1);
-        snp.onSnapshot(snap=>{
-          const GroupLastMessage = snap.docs.map(snap=>{
-            return snap.data()
-          })
-          setGroupLastMessage(GroupLastMessage)
-        })
+      snp.onSnapshot(snap => {
+        const GroupLastMessage = snap.docs.map(snap => {
+          return snap.data();
+        });
+        setGroupLastMessage(GroupLastMessage);
+      });
     } else {
       const msgUID =
         curentUserID > reciverUID
@@ -105,7 +105,7 @@ const Chatescreen = ({route, navigation}) => {
           return snap.data();
         });
         setLastMessage(lastmessage);
-        console.log('lastMessage==>', lastMessage);
+        // console.log('lastMessage==>', lastMessage);
       });
     }
   }, []);
@@ -116,16 +116,16 @@ const Chatescreen = ({route, navigation}) => {
   };
 
   const onSend = async messagesArray => {
-    console.log('messagesArray[0]messagesArray[0]==<', messagesArray[0]);
+    // console.log('messagesArray[0]messagesArray[0]==<', messagesArray[0]);
     const msg = messagesArray[0];
-    console.log('messagesArray[0]messagesArray[0]==<', msg);
+    // console.log('messagesArray[0]messagesArray[0]==<', msg);
     if (group) {
       const myMeg = {
         ...msg,
         sender: curentUserID,
         image: ImageUrl,
       };
-      console.log('myMegmyMeg=>', myMeg);
+      // console.log('myMegmyMeg=>', myMeg);
       setMessages(previousMessages =>
         GiftedChat.append(previousMessages, myMeg),
       );
@@ -163,10 +163,10 @@ const Chatescreen = ({route, navigation}) => {
   };
 
   const onSendSned = async messagesArray => {
-    console.log('messagesArray===>', messagesArray);
-    console.log('USer', Users);
+    // console.log('messagesArray===>', messagesArray);
+    // console.log('USer', Users);
     if (group) {
-      console.log('Group And Image');
+      // console.log('Group And Image');
       const myMeg = {
         _id: uuid.v4(),
         sender: curentUserID,
@@ -176,7 +176,7 @@ const Chatescreen = ({route, navigation}) => {
           ...Users,
         },
       };
-      console.log('myMegmyMeg=>', myMeg);
+      // console.log('myMegmyMeg=>', myMeg);
       setMessages(previousMessages =>
         GiftedChat.append(previousMessages, myMeg),
       );
@@ -189,7 +189,7 @@ const Chatescreen = ({route, navigation}) => {
         });
       setImageUrl('');
     } else {
-      console.log('personal');
+      // console.log('personal');
       const myMeg = {
         _id: uuid.v4(),
         sender: curentUserID,
@@ -224,33 +224,35 @@ const Chatescreen = ({route, navigation}) => {
   };
 
   const onBackPress = () => {
-    console.log('last message', lastMessage);
-    console.log('last GroupLastMessage', groupLastMessage);
-    if (group) {
-      firestore()
-      .collection('GroupChat')
-      .doc(UID)
-      .update({
-        lastmessage : groupLastMessage
-      })
-      navigation.navigate('Tabnavigate');
-    } else {
-      firestore()
-        .collection('Users')
-        .doc(curentUserID)
-        .collection('Firends')
-        .doc(reciverUID)
-        .update({
-          lastmessage: lastMessage,
+    // console.log('last message', lastMessage);
+    // console.log('last GroupLastMessage', groupLastMessage);
+    if (lastMessage.length !== 0 || groupLastMessage.length !== 0) {
+      if (group) {
+        firestore().collection('GroupChat').doc(UID).update({
+          lastmessage: groupLastMessage,
         });
-      firestore()
-        .collection('Users')
-        .doc(reciverUID)
-        .collection('Firends')
-        .doc(curentUserID)
-        .update({
-          lastmessage: lastMessage,
-        });
+        navigation.navigate('Tabnavigate');
+      } else {
+        firestore()
+          .collection('Users')
+          .doc(curentUserID)
+          .collection('Firends')
+          .doc(reciverUID)
+          .update({
+            lastmessage: lastMessage,
+          });
+        firestore()
+          .collection('Users')
+          .doc(reciverUID)
+          .collection('Firends')
+          .doc(curentUserID)
+          .update({
+            lastmessage: lastMessage,
+          });
+        navigation.navigate('Tabnavigate');
+      }
+    }else{
+      // console.log("0 data");
       navigation.navigate('Tabnavigate');
     }
   };
@@ -269,14 +271,14 @@ const Chatescreen = ({route, navigation}) => {
       height: responsiveScreenHeight(17),
       cropping: true,
     }).then(image => {
-      console.log('imageimage', image);
+      // console.log('imageimage', image);
       let imageData = {
         image: image.path,
       };
 
       setImage(imageData);
       uploadImage(imageData);
-      console.log('Image::', imageData);
+      // console.log('Image::', imageData);
       onClosePress();
     });
   };
@@ -296,13 +298,27 @@ const Chatescreen = ({route, navigation}) => {
       .then(url => {
         return url;
       });
-    console.log('imageData==>++++++++++', imageUrl);
+    // console.log('imageData==>++++++++++', imageUrl);
     setImageUrl(imageUrl);
-    console.log('imageData==>++++++++++', ImageUrl);
+    // console.log('imageData==>++++++++++', ImageUrl);
     await onSendSned(imageUrl);
-    console.log('image uri', ImageUrl);
-    console.log('IMAGE', imageUrl);
+    // console.log('image uri', ImageUrl);
+    // console.log('IMAGE', imageUrl);
   };
+
+  const onVideoCallPress = () => {
+    navigation.navigate('Videocallscreen', {
+      currentuser: currentUser,
+      groupId: group?.id,
+    });
+  };
+
+  const onVoiceCallPress = () => {
+    navigation.navigate('Voicecallscreen', {
+      currentuser: currentUser,
+      groupId: group?.id,
+    });
+  }
 
   return (
     <View style={style.mainView}>
@@ -359,12 +375,18 @@ const Chatescreen = ({route, navigation}) => {
                 </TouchableOpacity>
               )}
             </View>
-            <TouchableOpacity>
-              <Image
-                source={ImageConst.call_png}
-                style={[style.headerImage, {marginRight: 5}]}
-              />
-            </TouchableOpacity>
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: responsiveScreenHeight(1),
+              }}>
+              <TouchableOpacity onPress={onVoiceCallPress}>
+                <Image source={ImageConst.call_png} style={style.voiceCall} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onVideoCallPress}>
+                <Image source={ImageConst.zoom_png} style={style.videoCall} />
+              </TouchableOpacity>
+            </View>
           </View>
           <GiftedChat
             alwaysShowSend
@@ -505,7 +527,7 @@ const style = StyleSheet.create({
   },
   headerProfile: {
     flexDirection: 'row',
-    width: responsiveScreenWidth(80),
+    width: responsiveScreenWidth(70),
   },
   latsSeen: {
     marginLeft: 30,
@@ -529,6 +551,19 @@ const style = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: responsiveScreenWidth(10),
     width: responsiveScreenWidth(78),
+  },
+  voiceCall: {
+    marginRight: responsiveScreenWidth(4),
+    height: responsiveScreenHeight(3),
+    width: responsiveScreenWidth(6.3),
+    marginTop: responsiveScreenHeight(0.5),
+    tintColor: 'white',
+  },
+  videoCall: {
+    marginRight: responsiveScreenWidth(4),
+    height: responsiveScreenHeight(4),
+    width: responsiveScreenWidth(7),
+    tintColor: 'white',
   },
 });
 

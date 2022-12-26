@@ -40,7 +40,7 @@ const Groupchatscreen = () => {
         .collection('GroupChat')
         .get()
         .then(querySnapshot => {
-          console.log('querySnapshot==>', querySnapshot.docs);
+          // console.log('querySnapshot==>', querySnapshot.docs);
           const data = querySnapshot.docs.map(snp => {
             if (snp.data()?.ID?.includes(userUId)) {
               return {
@@ -49,22 +49,22 @@ const Groupchatscreen = () => {
               };
             }
           });
-          console.log('datadata==>', data);
+          // console.log('datadata==>', data);
           setGroup(data);
         });
     } else {
-      console.log('User not available');
+      // console.log('User not available');
     }
   };
 
-  console.log('group==>', group);
+  // console.log('group==>', group);
 
   useEffect(() => {
     auth().onAuthStateChanged(onAuthStateChanged);
   }, [isFocuse]);
 
   const onGroupChatPress = item => {
-    console.log('item==>', item);
+    // console.log('item==>', item);
     navigation.navigate('Chatescreen', {
       groupData: item,
       curentUserID: activeUserId,
@@ -77,13 +77,14 @@ const Groupchatscreen = () => {
       <FlatList
         data={group}
         renderItem={({item}) => {
-          console.log('item==>', item?.data?.lastmessage[0]);
+          // console.log('item==>', item);
+
           return (
             <View>
               <TouchableOpacity
                 style={style.messageListStyle}
                 onPress={() => onGroupChatPress(item)}>
-                <View style={{flexDirection : 'row'}}>
+                <View style={{flexDirection: 'row'}}>
                   <View>
                     <Image
                       source={{uri: item?.data?.Photo}}
@@ -94,32 +95,42 @@ const Groupchatscreen = () => {
                     <Text style={style.listUserName}>
                       {item?.data?.GroupChat}
                     </Text>
-                    {item?.data?.lastmessage[0]?.image === '' ? (
-                      <Text style={{marginLeft: 30, marginTop: 2}}>
-                        {item?.data?.lastmessage[0]?.text}
-                      </Text>
+                    {item?.data?.lastmessage ? (
+                      <>
+                        {item?.data?.lastmessage[0]?.image === '' ? (
+                          <Text style={{marginLeft: 30, marginTop: 2}}>
+                            {item?.data?.lastmessage[0]?.text}
+                          </Text>
+                        ) : (
+                          <View style={{flexDirection: 'row', marginTop: 5}}>
+                            <Image
+                              source={ImageConst.gallery_png}
+                              style={{
+                                height: responsiveScreenHeight(1.8),
+                                width: responsiveScreenWidth(4),
+                                marginLeft: 30,
+                              }}
+                            />
+                            <Text style={{marginLeft: 5}}>Photo</Text>
+                          </View>
+                        )}
+                      </>
                     ) : (
-                      <View style={{flexDirection: 'row', marginTop: 5}}>
-                        <Image
-                          source={ImageConst.gallery_png}
-                          style={{
-                            height: responsiveScreenHeight(1.8),
-                            width: responsiveScreenWidth(4),
-                            marginLeft: 30,
-                          }}
-                        />
-                        <Text style={{marginLeft: 5}}>Photo</Text>
-                      </View>
+                      <></>
                     )}
                   </View>
                 </View>
-                <View style={{marginTop: 5}}>
-                  <Text>
-                    {moment(item?.data?.lastmessage[0]?.createdAt).format(
-                      'DD MMM YYYY',
-                    )}
-                  </Text>
-                </View>
+                {item?.data?.lastmessage ? (
+                  <View style={{marginTop: 5}}>
+                    <Text>
+                      {moment(item?.data?.lastmessage[0]?.createdAt).format(
+                        'DD MMM YYYY',
+                      )}
+                    </Text>
+                  </View>
+                ) : (
+                  <></>
+                )}
               </TouchableOpacity>
             </View>
           );
@@ -134,7 +145,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 10,
     paddingHorizontal: 10,
-    justifyContent : 'space-between'
+    justifyContent: 'space-between',
   },
   userProfile: {
     height: responsiveScreenHeight(6),

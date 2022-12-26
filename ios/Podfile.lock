@@ -1007,6 +1007,9 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-zego-express-engine (3.1.2):
+    - React
+    - ZegoExpressPrivate (= 3.1.1.26002)
   - React-perflogger (0.70.6)
   - React-RCTActionSheet (0.70.6):
     - React-Core/RCTActionSheetHeaders (= 0.70.6)
@@ -1113,8 +1116,20 @@ PODS:
     - React-RCTImage
   - RNSha256 (1.4.9):
     - React-Core
+  - RNSound (0.11.2):
+    - React-Core
+    - RNSound/Core (= 0.11.2)
+  - RNSound/Core (0.11.2):
+    - React-Core
   - TOCropViewController (2.6.1)
   - Yoga (1.14.0)
+  - zego-uikit-prebuilt-call-rn (1.3.1):
+    - React-Core
+  - zego-uikit-rn (1.4.10):
+    - React-Core
+  - ZegoExpressPrivate (3.1.1.26002):
+    - ZegoExpressPrivate/Default (= 3.1.1.26002)
+  - ZegoExpressPrivate/Default (3.1.1.26002)
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
@@ -1141,6 +1156,7 @@ DEPENDENCIES:
   - react-native-fbsdk-next (from `../node_modules/react-native-fbsdk-next`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-zego-express-engine (from `../node_modules/zego-express-engine-reactnative`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -1163,7 +1179,10 @@ DEPENDENCIES:
   - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSha256 (from `../node_modules/react-native-sha256`)
+  - RNSound (from `../node_modules/react-native-sound`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
+  - "zego-uikit-prebuilt-call-rn (from `../node_modules/@zegocloud/zego-uikit-prebuilt-call-rn`)"
+  - "zego-uikit-rn (from `../node_modules/@zegocloud/zego-uikit-rn`)"
 
 SPEC REPOS:
   trunk:
@@ -1199,6 +1218,7 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - TOCropViewController
+    - ZegoExpressPrivate
 
 EXTERNAL SOURCES:
   boost:
@@ -1247,6 +1267,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-pager-view"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-zego-express-engine:
+    :path: "../node_modules/zego-express-engine-reactnative"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -1291,8 +1313,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSha256:
     :path: "../node_modules/react-native-sha256"
+  RNSound:
+    :path: "../node_modules/react-native-sound"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
+  zego-uikit-prebuilt-call-rn:
+    :path: "../node_modules/@zegocloud/zego-uikit-prebuilt-call-rn"
+  zego-uikit-rn:
+    :path: "../node_modules/@zegocloud/zego-uikit-rn"
 
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
@@ -1349,6 +1377,7 @@ SPEC CHECKSUMS:
   react-native-fbsdk-next: c78dede90e3c50ab6936a7d56c43e1a9eb37e25a
   react-native-pager-view: 54bed894cecebe28cede54c01038d9d1e122de43
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
+  react-native-zego-express-engine: 3210c5d9c911348834134d038561577a8cbfb777
   React-perflogger: 8c79399b0500a30ee8152d0f9f11beae7fc36595
   React-RCTActionSheet: 7316773acabb374642b926c19aef1c115df5c466
   React-RCTAnimation: 5341e288375451297057391227f691d9b2326c3d
@@ -1371,9 +1400,13 @@ SPEC CHECKSUMS:
   RNImageCropPicker: 648356d68fbf9911a1016b3e3723885d28373eda
   RNScreens: 34cc502acf1b916c582c60003dc3089fa01dc66d
   RNSha256: a6bc3640a34eb41907e363828b9ec742c274298d
+  RNSound: 6c156f925295bdc83e8e422e7d8b38d33bc71852
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Yoga: 99caf8d5ab45e9d637ee6e0174ec16fbbb01bcfc
+  zego-uikit-prebuilt-call-rn: d4f06cc930ad1a19e894f3dc89cdf6cd9d19dc04
+  zego-uikit-rn: 55ffb13068668afd8a770363763b744dafe7f9a1
+  ZegoExpressPrivate: a61c6542a72054ff23083be6a55285983222149b
 
-PODFILE CHECKSUM: 3681d0fa334ecbc2b2e292d2555fb23b7f123ad8
+PODFILE CHECKSUM: d7f6c63d98b12b7ea93cb107d9ff74b450fdf819
 
 COCOAPODS: 1.11.3
