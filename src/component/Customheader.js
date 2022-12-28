@@ -9,7 +9,6 @@ import {
 import {ImageConst} from '../utils/helper/ImageConst';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import Tabnavigate from '../navigation/Tabnavigate';
 
 const Customheader = () => {
   const [Header, setHeader] = useState('');

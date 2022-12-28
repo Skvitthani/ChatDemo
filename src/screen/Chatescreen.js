@@ -35,12 +35,12 @@ const Chatescreen = ({route, navigation}) => {
   const group = route?.params?.groupData;
   // const curentUserID = route?.params?.onGroupcurentUserID;
   const UID = group?.id;
-  // console.log('group===>', group);
-  // console.log('ID===>', UID);
-  // console.log('itemsitems==', items);
-  // console.log('currentUsercurrentUser', currentUser);
-  // console.log('curentUserID', curentUserID);
-  // console.log('reciverUID', reciverUID);
+  console.log('group===>', group);
+  console.log('ID===>', UID);
+  console.log('itemsitems==', items);
+  console.log('currentUsercurrentUser', currentUser);
+  console.log('curentUserID', curentUserID);
+  console.log('reciverUID', reciverUID);
 
   const [messages, setMessages] = useState([]);
   const [showChatScreen, setShowChatScreen] = useState(true);
@@ -61,7 +61,7 @@ const Chatescreen = ({route, navigation}) => {
         .orderBy('createdAt', 'desc');
       snapShot.onSnapshot(snp => {
         const message = snp.docs.map(snap => {
-          return {...snap.data(), createdAt: new Date()};
+          return {...snap.data(), createdAt: snap?.data()?.createdAt?.toDate()};
         });
         // console.log('messagemessage', message);
         setMessages(message);
@@ -90,7 +90,7 @@ const Chatescreen = ({route, navigation}) => {
         .orderBy('createdAt', 'desc');
       querySnapShot.onSnapshot(snapShot => {
         const allMessages = snapShot.docs.map(snp => {
-          return {...snp.data(), createdAt: new Date()};
+          return {...snp.data(), createdAt: snp?.data()?.createdAt?.toDate()};
         });
         setMessages(allMessages);
       });
@@ -124,6 +124,7 @@ const Chatescreen = ({route, navigation}) => {
         ...msg,
         sender: curentUserID,
         image: ImageUrl,
+        createdAt: new Date(),
       };
       // console.log('myMegmyMeg=>', myMeg);
       setMessages(previousMessages =>
@@ -143,6 +144,7 @@ const Chatescreen = ({route, navigation}) => {
         sender: curentUserID,
         reciver: reciverUID,
         image: ImageUrl,
+          createdAt: new Date(),
       };
       const msgUID =
         curentUserID > reciverUID
@@ -251,7 +253,7 @@ const Chatescreen = ({route, navigation}) => {
           });
         navigation.navigate('Tabnavigate');
       }
-    }else{
+    } else {
       // console.log("0 data");
       navigation.navigate('Tabnavigate');
     }
@@ -307,18 +309,30 @@ const Chatescreen = ({route, navigation}) => {
   };
 
   const onVideoCallPress = () => {
-    navigation.navigate('Videocallscreen', {
-      currentuser: currentUser,
-      groupId: group?.id,
-    });
+    if (group) {
+      navigation.navigate('Videocallscreen', {
+        currentuser: currentUser,
+        groupId: group?.id,
+      });
+    } else {
+      navigation.navigate('Videocallscreen', {
+        items: items,
+      });
+    }
   };
 
   const onVoiceCallPress = () => {
-    navigation.navigate('Voicecallscreen', {
-      currentuser: currentUser,
-      groupId: group?.id,
-    });
-  }
+    if (group) {
+      navigation.navigate('Voicecallscreen', {
+        currentuser: currentUser,
+        groupId: group?.id,
+      });
+    } else {
+      navigation.navigate('Voicecallscreen', {
+        items: items,
+      });
+    }
+  };
 
   return (
     <View style={style.mainView}>
@@ -370,7 +384,7 @@ const Chatescreen = ({route, navigation}) => {
                   />
                   <View>
                     <Text style={style.messageFont}>{items?.name}</Text>
-                    <Text style={style.status}></Text>
+                    {/* <Text style={style.status}></Text> */}
                   </View>
                 </TouchableOpacity>
               )}
@@ -497,7 +511,7 @@ const style = StyleSheet.create({
     color: 'white',
     marginLeft: 10,
     fontWeight: 'bold',
-    marginLeft: 30,
+    marginLeft: 10,
     marginTop: 10,
   },
   headerImage: {

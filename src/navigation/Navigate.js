@@ -17,8 +17,9 @@ const stack = createNativeStackNavigator();
 
 const Navigate = () => {
   return (
-    <NavigationContainer ref={navigationRef}>
-      <stack.Navigator>
+    <NavigationContainer ref={navigationRef} independent={true}>
+      <stack.Navigator 
+      >
         <stack.Screen
           name="Tabnavigate"
           component={Tabnavigate}

@@ -1010,6 +1010,9 @@ PODS:
   - react-native-zego-express-engine (3.1.2):
     - React
     - ZegoExpressPrivate (= 3.1.1.26002)
+  - react-native-zego-zim (2.5.0):
+    - React
+    - ZIM (= 2.5.0)
   - React-perflogger (0.70.6)
   - React-RCTActionSheet (0.70.6):
     - React-Core/RCTActionSheetHeaders (= 0.70.6)
@@ -1130,6 +1133,7 @@ PODS:
   - ZegoExpressPrivate (3.1.1.26002):
     - ZegoExpressPrivate/Default (= 3.1.1.26002)
   - ZegoExpressPrivate/Default (3.1.1.26002)
+  - ZIM (2.5.0)
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
@@ -1157,6 +1161,7 @@ DEPENDENCIES:
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-zego-express-engine (from `../node_modules/zego-express-engine-reactnative`)
+  - react-native-zego-zim (from `../node_modules/zego-zim-react-native`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -1219,6 +1224,7 @@ SPEC REPOS:
     - PromisesObjC
     - TOCropViewController
     - ZegoExpressPrivate
+    - ZIM
 
 EXTERNAL SOURCES:
   boost:
@@ -1269,6 +1275,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-zego-express-engine:
     :path: "../node_modules/zego-express-engine-reactnative"
+  react-native-zego-zim:
+    :path: "../node_modules/zego-zim-react-native"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -1378,6 +1386,7 @@ SPEC CHECKSUMS:
   react-native-pager-view: 54bed894cecebe28cede54c01038d9d1e122de43
   react-native-safe-area-context: 99b24a0c5acd0d5dcac2b1a7f18c49ea317be99a
   react-native-zego-express-engine: 3210c5d9c911348834134d038561577a8cbfb777
+  react-native-zego-zim: 10b98d4d9e543d2f0f9a6a6677e30fce86d918ad
   React-perflogger: 8c79399b0500a30ee8152d0f9f11beae7fc36595
   React-RCTActionSheet: 7316773acabb374642b926c19aef1c115df5c466
   React-RCTAnimation: 5341e288375451297057391227f691d9b2326c3d
@@ -1406,7 +1415,8 @@ SPEC CHECKSUMS:
   zego-uikit-prebuilt-call-rn: d4f06cc930ad1a19e894f3dc89cdf6cd9d19dc04
   zego-uikit-rn: 55ffb13068668afd8a770363763b744dafe7f9a1
   ZegoExpressPrivate: a61c6542a72054ff23083be6a55285983222149b
+  ZIM: 98ff6cc7bc28b0c54476ab317dfe1e62f6e90738
 
-PODFILE CHECKSUM: d7f6c63d98b12b7ea93cb107d9ff74b450fdf819
+PODFILE CHECKSUM: 3681d0fa334ecbc2b2e292d2555fb23b7f123ad8
 
 COCOAPODS: 1.11.3

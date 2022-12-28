@@ -1,4 +1,5 @@
 #import "AppDelegate.h"
+#import <React/RCTBridgeDelegate.h>
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>

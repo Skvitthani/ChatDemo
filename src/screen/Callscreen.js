@@ -15,6 +15,7 @@ import {
   responsiveScreenWidth,
 } from 'react-native-responsive-dimensions';
 import {ImageConst} from '../utils/helper/ImageConst';
+import {ZegoStartCallInvitationButton} from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 const Callscreen = () => {
   const [userData, setUserData] = useState([]);
@@ -58,19 +59,19 @@ const Callscreen = () => {
     auth().onAuthStateChanged(onAuthStateChanged);
   }, [isFocuse]);
 
-  const onVideoCallPress = (item) => {
-    // console.log('item==>',item);
-    navigation.navigate('Videocallscreen',{
-        items : item,
-    });
-  };
+  // const onVideoCallPress = item => {
+  // console.log('item==>',item);
+  //   navigation.navigate('Videocallscreen', {
+  //     items: item,
+  //   });
+  // };
 
-  const onVoiceCallPress = (item) => {
-    // console.log('item==>',item);
-    navigation.navigate('Voicecallscreen',{
-        items : item
-    });
-  };
+  // const onVoiceCallPress = item => {
+  // console.log('item==>',item);
+  //   navigation.navigate('Voicecallscreen', {
+  //     items: item,
+  //   });
+  // };
 
   return (
     <View style={style.mainStyle}>
@@ -84,12 +85,20 @@ const Callscreen = () => {
                 <Text style={style.listUserName}>{item?.name}</Text>
               </View>
               <View style={{flexDirection: 'row', padding: 10}}>
-                <TouchableOpacity onPress={()=>onVideoCallPress(item)}>
+                <ZegoStartCallInvitationButton
+                  invitees={[item?.sendTo]}
+                  isVideoCall={true}
+                />
+                <ZegoStartCallInvitationButton
+                  invitees={[item?.sendTo]}
+                  isVideoCall={false}
+                />
+                {/* <TouchableOpacity onPress={() => onVideoCallPress(item)}>
                   <Image source={ImageConst.zoom_png} style={style.videoCall} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>onVoiceCallPress(item)}>
+                </TouchableOpacity> */}
+                {/* <TouchableOpacity onPress={()=>onVoiceCallPress(item)}>
                   <Image source={ImageConst.call_png} style={style.voiceCall} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
           );

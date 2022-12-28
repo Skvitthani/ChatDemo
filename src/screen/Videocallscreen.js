@@ -3,9 +3,14 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import ZegoUIKitPrebuiltCall, {
   GROUP_VIDEO_CALL_CONFIG,
+  GROUP_VOICE_CALL_CONFIG,
   ONE_ON_ONE_VIDEO_CALL_CONFIG,
+  ONE_ON_ONE_VOICE_CALL_CONFIG,
+  ZegoInvitationType,
+  ZegoStartCallInvitationButton,
+  ZegoUIKitPrebuiltCallWithInvitation,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-import {ZegoLayoutMode} from '@zegocloud/zego-uikit-rn';
+import ZegoUIKitSignalingPlugin from '@zegocloud/zego-uikit-signaling-plugin-rn';
 
 const Videocallscreen = ({route}) => {
   const detail = route?.params?.items;
@@ -54,7 +59,6 @@ const Videocallscreen = ({route}) => {
           appSign={
             '6465c22dbca6bd082f4119c18d85c63587a464a2a3b72ef3525323ff3e8a9d8f'
           }
-          profileUrl={detail?.Photo}
           userID={detail?.sendFrom}
           userName={detail?.name}
           callID={VideoCallId}
@@ -66,7 +70,7 @@ const Videocallscreen = ({route}) => {
             onHangUp: () => {
               navigation.navigate('Tabnavigate');
             },
-            
+
             turnOnCameraWhenJoining: false,
             turnOnMicrophoneWhenJoining: true,
           }}
