@@ -7,6 +7,8 @@
 
 #import <React/RCTAppSetupUtils.h>
 
+#import <UserNotifications/UserNotifications.h>
+#import <RNCPushNotificationIOS.h>
 #import <Firebase.h>
 #import <FBSDKCoreKit/FBSDKCoreKit-swift.h>
 
@@ -20,6 +22,7 @@
 
 #import <react/config/ReactNativeConfig.h>
 
+
 static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 
 @interface AppDelegate () <RCTCxxBridgeDelegate, RCTTurboModuleManagerDelegate> {
@@ -28,6 +31,7 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   std::shared_ptr<const facebook::react::ReactNativeConfig> _reactNativeConfig;
   facebook::react::ContextContainer::Shared _contextContainer;
 }
+
 @end
 #endif
 
@@ -36,6 +40,8 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   [FIRApp configure];
+   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+  center.delegate = self;
     
   RCTAppSetupPrepareApp(application);
 
@@ -66,6 +72,12 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
    [[FBSDKApplicationDelegate sharedInstance] application:application
                        didFinishLaunchingWithOptions:launchOptions];
   return YES;
+}
+
+
+-(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
+{
+  completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionBadge);
 }
 
 /// This method controls whether the `concurrentRoot`feature of React18 is turned on or off.

@@ -22,6 +22,8 @@ const Notificationscreen = ({navigation}) => {
   const [matchRequest, setMatchRequest] = useState([]);
   const [matchId, setMatchId] = useState([]);
 
+  console.log('activeUser==>',activeUser);
+
   const isFocuse = useIsFocused();
 
   const onAuthStateChanged = async user => {
@@ -65,7 +67,7 @@ const Notificationscreen = ({navigation}) => {
 
   const onAddPress = (item, index) => {
     console.log('indexindex', index);
-    console.log('item', item?.sendFrom);
+    console.log('item', item);
     firestore()
       .collection('Users')
       .doc(activeUserUID)
@@ -82,6 +84,7 @@ const Notificationscreen = ({navigation}) => {
         name: activeUser?.name,
         sendFrom: activeUser?.userId,
         sendTo: item?.sendFrom,
+          Token : activeUser?.Token
       });
 
     const deleteId = matchId?.filter((id, indexs) => {

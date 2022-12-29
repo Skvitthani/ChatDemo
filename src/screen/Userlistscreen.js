@@ -29,6 +29,7 @@ const Userlistscreen = () => {
   const navigation = useNavigation()
 
   console.log("firend==>",firend);
+  console.log("currentUser==>",currentUser);
 
   const isFocuse = useIsFocused();
 
@@ -93,13 +94,14 @@ const Userlistscreen = () => {
   };
 
   const onAddUserPress = item => {
-    console.log('add user id', item?._data?.userId);
+    console.log('add user id', item);
     const ID = item?._data?.userId;
     firestore().collection('Firends').add({
       sendTo: ID,
       sendFrom: currentUserId,
       Photo: currentUser?.Photo,
       name: currentUser?.name,
+      Token : currentUser?.Token
     });
   };
   // console.log('currentUsercurrentUser', currentUser);

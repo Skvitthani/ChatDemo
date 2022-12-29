@@ -13,6 +13,7 @@ import ImageCropPicker from 'react-native-image-crop-picker';
 import SignUpComponent from '../component/SignUpComponent';
 import LoginComponent from '../component/Logincomponent';
 import storage from '@react-native-firebase/storage';
+import messaging from '@react-native-firebase/messaging';
 
 const Signupscreen = ({navigation}) => {
   const [userEmail, setUserEmail] = useState('');
@@ -26,8 +27,10 @@ const Signupscreen = ({navigation}) => {
   const [imagePath, setImagePath] = useState('');
   console.log('imagePathimagePath+++++++=====>', imagePath);
 
-  
+
+
   const onSignUpPress = async () => {
+    const token = await messaging().getToken();
     const imagePath = image?.image;
     const reference = storage().ref(`${imagePath}`);
     console.log('reference', reference?.path);
@@ -59,7 +62,7 @@ const Signupscreen = ({navigation}) => {
         email: userEmail,
         pass: password,
         userId: UID,
-        status: 'offline',
+        Token : token
       });
       setUserName('');
       setPassword('');

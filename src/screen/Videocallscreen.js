@@ -3,14 +3,8 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import ZegoUIKitPrebuiltCall, {
   GROUP_VIDEO_CALL_CONFIG,
-  GROUP_VOICE_CALL_CONFIG,
   ONE_ON_ONE_VIDEO_CALL_CONFIG,
-  ONE_ON_ONE_VOICE_CALL_CONFIG,
-  ZegoInvitationType,
-  ZegoStartCallInvitationButton,
-  ZegoUIKitPrebuiltCallWithInvitation,
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
-import ZegoUIKitSignalingPlugin from '@zegocloud/zego-uikit-signaling-plugin-rn';
 
 const Videocallscreen = ({route}) => {
   const detail = route?.params?.items;
