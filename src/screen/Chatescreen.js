@@ -50,10 +50,10 @@ const Chatescreen = ({route, navigation}) => {
   });
   // console.log('takeToken==>',takeToken);
   // console.log('takeToken==>',arr);
-  // console.log('group===>', group);
+  console.log('group===>', group);
   // console.log('ID===>', UID);
   // console.log('itemsitems==', items);
-  // console.log('currentUsercurrentUser', currentUser);
+  console.log('currentUsercurrentUser', currentUser);
   // console.log('curentUserID', curentUserID);
   // console.log('reciverUID', reciverUID);
 
@@ -339,6 +339,7 @@ const Chatescreen = ({route, navigation}) => {
         body: 'Group Video Call',
         CallId: CallId,
         token: takeToken,
+        Photo : group?.data?.Photo
       };
       Notificationservice.sendMultiDiveceNotification(notification);
       navigation.navigate('Videocallscreen', {
@@ -351,6 +352,7 @@ const Chatescreen = ({route, navigation}) => {
         body: 'Video Call',
         token: items?.Token,
         CallId: CallId,
+        Photo : currentUser?.Photo
       };
       await Notificationservice.sendSingleDiveceNotifiaction(notification);
       navigation.navigate('Videocallscreen', {
@@ -368,6 +370,7 @@ const Chatescreen = ({route, navigation}) => {
         body: 'Group Voice Call',
         CallId: CallId,
         token: takeToken,
+        Photo : group?.data?.Photo
       };
       Notificationservice.sendMultiDiveceNotification(notification);
       navigation.navigate('Voicecallscreen', {
@@ -381,6 +384,7 @@ const Chatescreen = ({route, navigation}) => {
         body: 'Voice Call',
         token: items?.Token,
         CallId: CallId,
+        Photo : currentUser?.Photo
       };
       Notificationservice.sendSingleDiveceNotifiaction(notification);
       navigation.navigate('Voicecallscreen', {

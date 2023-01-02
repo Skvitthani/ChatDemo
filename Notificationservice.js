@@ -10,6 +10,7 @@ const sendSingleDiveceNotifiaction = data => {
   var raw = JSON.stringify({
     data: {
       CallId: data.CallId,
+      Photo : data.Photo
     },
     notification: {
       body: data.body,
@@ -43,6 +44,7 @@ const sendMultiDiveceNotification = data => {
   var raw = JSON.stringify({
     data: {
       CallerId: data.CallId,
+      Photo : data.Photo
     },
     notification: {
       body: data.body,
