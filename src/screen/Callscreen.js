@@ -17,14 +17,16 @@ import {
   responsiveScreenWidth,
 } from 'react-native-responsive-dimensions';
 import {ImageConst} from '../utils/helper/ImageConst';
-import messaging from '@react-native-firebase/messaging';
 import Notificationservice from '../../Notificationservice';
+import uuid from 'react-native-uuid';
 
 const Callscreen = () => {
   const [userData, setUserData] = useState([]);
   const [activeUserId, setActiveUserID] = useState('');
   const [activeUser, setActiveUser] = useState('');
-  const [senderData, setSenderData] = useState('');
+  const [isVoiceCall, setIsVoiceCall] = useState(true);
+  console.log('isVoiceCall=>', isVoiceCall);
+  console.log("activeUser==>",activeUser);
 
   const isFocuse = useIsFocused();
   const navigation = useNavigation();
@@ -58,44 +60,43 @@ const Callscreen = () => {
 
   useEffect(() => {
     auth().onAuthStateChanged(onAuthStateChanged);
-    const unsbscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('Incoming Call',"Call", [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {text: 'OK', onPress: () => console.log('Ok')},
-      ]);
-    });
-    return unsbscribe;
+
   }, [isFocuse]);
 
-  console.log('==activeUser', activeUser);
 
-  const onVideoCallPress = item => {
+  const onVideoCallPress = async item => {
+    setIsVoiceCall(false);
+    let CallId = uuid.v4();
+    let notification = {
+      title: activeUser?.name,
+      body: 'Video Call',
+      token: item?.Token,
+      CallId: CallId,
+    };
+     Notificationservice.sendSingleDiveceNotifiaction(notification);
     console.log('item==>', item);
     navigation.navigate('Videocallscreen', {
-      items: item,
+      CallerId: CallId,
+      userName : activeUser
     });
   };
 
   const onVoiceCallPress = async item => {
-    setSenderData(item);
+    setIsVoiceCall(true);
+    let CallId = uuid.v4();
     let notification = {
-      title: 'Incoming Call',
-      body: 'Hello',
+      title: activeUser?.name,
+      body: 'Voice Call',
       token: item?.Token,
+      CallId: CallId,
     };
-    // await sendSingleDiveceNotifiaction(notification)
-    await Notificationservice.sendSingleDiveceNotifiaction(notification);
+     Notificationservice.sendSingleDiveceNotifiaction(notification);
     console.log('item==>', item);
-    // navigation.navigate('Voicecallscreen', {
-    //   Sender: activeUser,
-    //   items: item,
-    // });
+    navigation.navigate('Voicecallscreen', {
+      CallerId: CallId,
+      userName : item?.name
+    });
   };
-
   return (
     <View style={style.mainStyle}>
       <FlatList

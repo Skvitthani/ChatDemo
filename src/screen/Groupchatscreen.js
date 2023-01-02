@@ -40,7 +40,6 @@ const Groupchatscreen = () => {
         .collection('GroupChat')
         .get()
         .then(querySnapshot => {
-          // console.log('querySnapshot==>', querySnapshot.docs);
           const data = querySnapshot.docs.map(snp => {
             if (snp.data()?.ID?.includes(userUId)) {
               return {
@@ -49,22 +48,18 @@ const Groupchatscreen = () => {
               };
             }
           });
-          // console.log('datadata==>', data);
           setGroup(data);
         });
-    } else {
-      // console.log('User not available');
-    }
+        console.log("Group[",group);
+    } 
   };
 
-  // console.log('group==>', group);
 
   useEffect(() => {
     auth().onAuthStateChanged(onAuthStateChanged);
   }, [isFocuse]);
 
   const onGroupChatPress = item => {
-    // console.log('item==>', item);
     navigation.navigate('Chatescreen', {
       groupData: item,
       curentUserID: activeUserId,

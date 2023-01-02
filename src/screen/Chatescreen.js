@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   Platform,
   StyleSheet,
@@ -26,6 +27,9 @@ import Button from '../component/Button';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
 import uuid from 'react-native-uuid';
+import messaging from '@react-native-firebase/messaging';
+import Notificationservice from '../../Notificationservice';
+import {useIsFocused} from '@react-navigation/native';
 
 const Chatescreen = ({route, navigation}) => {
   const items = route?.params?.item;
@@ -33,14 +37,25 @@ const Chatescreen = ({route, navigation}) => {
   const curentUserID = route?.params?.curentUserID;
   const reciverUID = items?.sendFrom;
   const group = route?.params?.groupData;
-  // const curentUserID = route?.params?.onGroupcurentUserID;
   const UID = group?.id;
-  console.log('group===>', group);
-  console.log('ID===>', UID);
-  console.log('itemsitems==', items);
-  console.log('currentUsercurrentUser', currentUser);
-  console.log('curentUserID', curentUserID);
-  console.log('reciverUID', reciverUID);
+  const GroupMembers = group?.data?.GroupData;
+
+  console.log('GroupMembers==>', GroupMembers);
+  // const arr = typeof GroupMembers === 'object' && Object.entries(GroupMembers);
+  const takeToken = GroupMembers?.map(token => {
+    // console.log("token==>",token);
+    if (token?.Token && token?.Token !== currentUser?.Token) {
+      return token?.Token;
+    }
+  });
+  // console.log('takeToken==>',takeToken);
+  // console.log('takeToken==>',arr);
+  // console.log('group===>', group);
+  // console.log('ID===>', UID);
+  // console.log('itemsitems==', items);
+  // console.log('currentUsercurrentUser', currentUser);
+  // console.log('curentUserID', curentUserID);
+  // console.log('reciverUID', reciverUID);
 
   const [messages, setMessages] = useState([]);
   const [showChatScreen, setShowChatScreen] = useState(true);
@@ -50,9 +65,15 @@ const Chatescreen = ({route, navigation}) => {
   const [ImageUrl, setImageUrl] = useState('');
   const [lastMessage, setLastMessage] = useState([]);
   const [groupLastMessage, setGroupLastMessage] = useState([]);
+
   // console.log('image Url===>', ImageUrl);
+  const isFocuse = useIsFocused();
 
   useEffect(() => {
+    allMessage();
+  }, [isFocuse]);
+
+  const allMessage = () => {
     if (group) {
       const snapShot = firestore()
         .collection('GroupChat')
@@ -108,7 +129,7 @@ const Chatescreen = ({route, navigation}) => {
         // console.log('lastMessage==>', lastMessage);
       });
     }
-  }, []);
+  };
 
   const Users = {
     _id: curentUserID,
@@ -144,7 +165,7 @@ const Chatescreen = ({route, navigation}) => {
         sender: curentUserID,
         reciver: reciverUID,
         image: ImageUrl,
-          createdAt: new Date(),
+        createdAt: new Date(),
       };
       const msgUID =
         curentUserID > reciverUID
@@ -308,28 +329,62 @@ const Chatescreen = ({route, navigation}) => {
     // console.log('IMAGE', imageUrl);
   };
 
-  const onVideoCallPress = () => {
+  const onVideoCallPress = async () => {
     if (group) {
+      console.log('on Group Video Call Press');
+      let CallId = uuid.v4();
+      console.log('CallId==>',CallId);
+      let notification = {
+        title: currentUser?.name,
+        body: 'Group Video Call',
+        CallId: CallId,
+        token: takeToken,
+      };
+      Notificationservice.sendMultiDiveceNotification(notification);
       navigation.navigate('Videocallscreen', {
-        currentuser: currentUser,
-        groupId: group?.id,
+        GroupCallerId: CallId,
       });
     } else {
+      let CallId = uuid.v4();
+      let notification = {
+        title: currentUser?.name,
+        body: 'Video Call',
+        token: items?.Token,
+        CallId: CallId,
+      };
+      await Notificationservice.sendSingleDiveceNotifiaction(notification);
       navigation.navigate('Videocallscreen', {
-        items: items,
+        CallerId: CallId,
       });
     }
   };
 
-  const onVoiceCallPress = () => {
+  const onVoiceCallPress = async () => {
     if (group) {
+      console.log('on Group Voice Call Press');
+      let CallId = uuid.v4();
+      let notification = {
+        title: currentUser?.name,
+        body: 'Group Voice Call',
+        CallId: CallId,
+        token: takeToken,
+      };
+      Notificationservice.sendMultiDiveceNotification(notification);
       navigation.navigate('Voicecallscreen', {
-        currentuser: currentUser,
-        groupId: group?.id,
+        GroupCallerId: CallId,
       });
     } else {
+      console.log('on Voice Call Press');
+      let CallId = uuid.v4();
+      let notification = {
+        title: currentUser?.name,
+        body: 'Voice Call',
+        token: items?.Token,
+        CallId: CallId,
+      };
+      Notificationservice.sendSingleDiveceNotifiaction(notification);
       navigation.navigate('Voicecallscreen', {
-        items: items,
+        CallerId: CallId,
       });
     }
   };

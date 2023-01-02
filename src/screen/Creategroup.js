@@ -88,9 +88,10 @@ const Creategroup = ({route, navigation}) => {
         return url;
       });
     console.log('URL', ImageUrl);
-    let newData = {
+    let newData = [
       ...Users,
-    };
+    ]
+
     firestore()
       .collection('GroupChat')
       .doc(ID)

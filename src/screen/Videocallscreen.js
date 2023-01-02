@@ -7,34 +7,30 @@ import ZegoUIKitPrebuiltCall, {
 } from '@zegocloud/zego-uikit-prebuilt-call-rn';
 
 const Videocallscreen = ({route}) => {
-  const detail = route?.params?.items;
-  console.log('detail=>', detail);
 
-  const groupId = route?.params?.groupId;
-  const currentUser = route?.params?.currentuser;
+  const CallerId = route?.params?.CallerId;
+  const userName = route?.params?.userName;
+  const GroupCallerId = route?.params?.GroupCallerId;
+  console.log('GroupCallId==>', GroupCallerId);
+  console.log('Sender==>', CallerId);
+  console.log('userName==>', userName);
 
-  console.log('groupId==>', groupId);
-  console.log('currentUser===>', currentUser);
+  const userID = String(Math.floor(Math.random() * 10000));
+  console.log("userID==>",userID);
 
   const navigation = useNavigation();
 
-  const VideoCallId =
-    detail?.sendTo > detail?.sendFrom
-      ? detail?.sendTo + detail?.sendFrom + '123'
-      : detail?.sendFrom + detail?.sendTo + '123';
-
   return (
     <View style={{flex: 1}}>
-      {groupId ? (
+       {GroupCallerId ? (
         <ZegoUIKitPrebuiltCall
           appID={714082125}
           appSign={
             '6465c22dbca6bd082f4119c18d85c63587a464a2a3b72ef3525323ff3e8a9d8f'
           }
-          profileUrl={currentUser?.Photo}
-          userID={currentUser?.userId}
-          userName={currentUser?.name}
-          callID={groupId}
+          userID={userID}
+          userName={`${userID}`}
+          callID={GroupCallerId}
           config={{
             ...GROUP_VIDEO_CALL_CONFIG,
             onOnlySelfInRoom: () => {
@@ -47,15 +43,15 @@ const Videocallscreen = ({route}) => {
             turnOnMicrophoneWhenJoining: true,
           }}
         />
-      ) : (
+      ) : ( 
         <ZegoUIKitPrebuiltCall
           appID={714082125}
           appSign={
             '6465c22dbca6bd082f4119c18d85c63587a464a2a3b72ef3525323ff3e8a9d8f'
           }
-          userID={detail?.sendFrom}
-          userName={detail?.name}
-          callID={VideoCallId}
+          userID={userID}
+          userName={"userName"}
+          callID={CallerId}
           config={{
             ...ONE_ON_ONE_VIDEO_CALL_CONFIG,
             onOnlySelfInRoom: () => {

@@ -9,34 +9,27 @@ import ZegoUIKitPrebuiltCall, {
 const Voicecallscreen = ({route}) => {
   const navigation = useNavigation();
 
-  const Sender = route?.params?.Sender;
-  console.log('Sender==>', Sender);
+  const CallerId = route?.params?.CallerId;
+  const userName = route?.params?.userName;
+  console.log('Sender==>', CallerId);
+  console.log('userName==>', userName);
 
-  const detail = route?.params?.items;
-  console.log('detail=>', detail);
+  const userID = String(Math.floor(Math.random() * 10000));
+  console.log("userID==>",userID);
 
-  // const groupId = route?.params?.groupId;
-  // const currentUser = route?.params?.currentuser;
 
-  // console.log('groupId==>', groupId);
-  // console.log('currentUser===>', currentUser);
-
-  const VoiceCallId =
-    detail?.sendTo > detail?.sendFrom
-      ? detail?.sendTo + detail?.sendFrom + '123'
-      : detail?.sendFrom + detail?.sendTo + '123';
-  console.log('VoiceCallId==>', VoiceCallId);
+  const GroupCallerId = route?.params?.GroupCallerId;
   return (
     <View style={styles.container}>
-      {/* {Users ? ( */}
+      {CallerId ? (
       <ZegoUIKitPrebuiltCall
         appID={714082125}
         appSign={
           '6465c22dbca6bd082f4119c18d85c63587a464a2a3b72ef3525323ff3e8a9d8f'
         }
-        userID={detail?.sendFrom}
-        userName={detail?.name}
-        callID={VoiceCallId}
+        userID={userID}
+        userName={"userName"}
+        callID={CallerId}
         config={{
           ...ONE_ON_ONE_VOICE_CALL_CONFIG,
           onOnlySelfInRoom: () => {
@@ -47,15 +40,15 @@ const Voicecallscreen = ({route}) => {
           },
         }}
       />
-      {/* ) : ( */}
-      {/* <ZegoUIKitPrebuiltCall
+     ) : (
+       <ZegoUIKitPrebuiltCall
           appID={714082125}
           appSign={
             '6465c22dbca6bd082f4119c18d85c63587a464a2a3b72ef3525323ff3e8a9d8f'
           }
-          userID={currentUser?.userId}
-          userName={currentUser?.name}
-          callID={groupId}
+          userID={userID}
+          userName={"AB"}
+          callID={GroupCallerId}
           config={{
             ...GROUP_VOICE_CALL_CONFIG,
             onOnlySelfInRoom: () => {
@@ -66,7 +59,7 @@ const Voicecallscreen = ({route}) => {
             },
           }}
         />
-      )} */}
+      )} 
     </View>
   );
 };
