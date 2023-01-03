@@ -1,115 +1,126 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {Component, useEffect, useState} from 'react';
-import {Alert, AppState} from 'react-native';
+import React, {useEffect} from 'react';
+import {Alert} from 'react-native';
 import {Provider} from 'react-redux';
 import {myStore} from './src/action/store/Store';
 import Navigate from './src/navigation/Navigate';
 import messaging from '@react-native-firebase/messaging';
 import {navigate} from './src/navigation/NavigateRef';
 import AndroidNotification from './src/utils/notification/AndroidNotification';
+import notifee, {EventType} from '@notifee/react-native';
 
 const App = () => {
-  const [appState, setAppState] = useState('');
-
   useEffect(() => {
-    const AppStatus = AppState.addEventListener('change', nextAppState => {
-      console.log('Next AppState is: ', nextAppState);
-      setAppState(nextAppState);
-    if (nextAppState === 'active') {
-      messaging().onMessage(async remoteMessage => {
-        console.log('remoteMessage=>', remoteMessage);
-        if (remoteMessage?.notification?.body == 'Voice Call') {
-          Alert.alert(
-            'Voice Call',
-            `From ${remoteMessage?.notification?.title}`,
-            [
-              {
-                text: 'Reject',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-              },
-              {
-                text: 'Accept',
-                onPress: () =>
-                  navigate('Voicecallscreen', {
-                    CallerId: remoteMessage?.data?.CallId,
-                  }),
-              },
-            ],
-          );
-        } else if (remoteMessage?.notification?.body == 'Video Call') {
-          Alert.alert(
-            'Video Call',
-            `From ${remoteMessage?.notification?.title}`,
-            [
-              {
-                text: 'Reject',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-              },
-              {
-                text: 'Accept',
-                onPress: () =>
-                  navigate('Videocallscreen', {
-                    CallerId: remoteMessage?.data?.CallId,
-                  }),
-              },
-            ],
-          );
-        } else if (remoteMessage?.notification?.body == 'Group Voice Call') {
-          Alert.alert(
-            'Group Voice Call',
-            `From ${remoteMessage?.notification?.title}`,
-            [
-              {
-                text: 'Reject',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-              },
-              {
-                text: 'Accept',
-                onPress: () =>
-                  navigate('Voicecallscreen', {
-                    GroupCallerId: remoteMessage?.data?.CallerId,
-                  }),
-              },
-            ],
-          );
-        } else {
-          Alert.alert(
-            'Group Video Call',
-            `From ${remoteMessage?.notification?.title}`,
-            [
-              {
-                text: 'Reject',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-              },
-              {
-                text: 'Accept',
-                onPress: () =>
-                  navigate('Videocallscreen', {
-                    GroupCallerId: remoteMessage?.data?.CallerId,
-                  }),
-              },
-            ],
-          );
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log('remoteMessage=>', remoteMessage);
+      if (remoteMessage?.data?.body == 'Voice Call') {
+        Alert.alert('Voice Call', `From ${remoteMessage?.data?.title}`, [
+          {
+            text: 'Reject',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Accept',
+            onPress: () =>
+              navigate('Voicecallscreen', {
+                CallerId: remoteMessage?.data?.CallId,
+              }),
+          },
+        ]);
+      } else if (remoteMessage?.data?.body == 'Video Call') {
+        Alert.alert('Video Call', `From ${remoteMessage?.data?.title}`, [
+          {
+            text: 'Reject',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Accept',
+            onPress: () =>
+              navigate('Videocallscreen', {
+                CallerId: remoteMessage?.data?.CallId,
+              }),
+          },
+        ]);
+      } else if (remoteMessage?.data?.body == 'Group Voice Call') {
+        Alert.alert('Group Voice Call', `From ${remoteMessage?.data?.title}`, [
+          {
+            text: 'Reject',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Accept',
+            onPress: () =>
+              navigate('Voicecallscreen', {
+                GroupCallerId: remoteMessage?.data?.CallId,
+              }),
+          },
+        ]);
+      } else {
+        Alert.alert('Group Video Call', `From ${remoteMessage?.data?.title}`, [
+          {
+            text: 'Reject',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Accept',
+            onPress: () =>
+              navigate('Videocallscreen', {
+                GroupCallerId: remoteMessage?.data?.CallId,
+              }),
+          },
+        ]);
+      }
+    });
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('backgroung notification', remoteMessage);
+      AndroidNotification.showNotification(
+        `${remoteMessage?.data?.body}`,
+        `${remoteMessage?.data?.title}`,
+        `${remoteMessage?.data?.Photo}`,
+        `${remoteMessage?.data?.CallId}`,
+      );
+      notifee.onBackgroundEvent(async ({type, detail}) => {
+        const {notification, pressAction} = detail;
+        console.log('detail ::', detail);
+        if (
+          type === EventType.ACTION_PRESS &&
+          pressAction.id === 'Accept' &&
+          detail?.notification?.title === 'Video Call'
+        ) {
+          navigate('Videocallscreen', {
+            CallerId: detail?.notification?.data?.title,
+          });
+        } else if (
+          type === EventType.ACTION_PRESS &&
+          pressAction.id === 'Accept' &&
+          detail?.notification?.title === 'Voice Call'
+        ) {
+          navigate('Voicecallscreen', {
+            CallerId: detail?.notification?.data?.title,
+          });
+        } else if (
+          type === EventType.ACTION_PRESS &&
+          pressAction.id === 'Accept' &&
+          detail?.notification?.title === 'Group Voice Call'
+        ) {
+          navigate('Voicecallscreen', {
+            GroupCallerId: detail?.notification?.data?.title,
+          });
+        } else if (
+          type === EventType.ACTION_PRESS &&
+          pressAction.id === 'Accept' &&
+          detail?.notification?.title === 'Group Video Call'
+        ) {
+          navigate('Videocallscreen', {
+            GroupCallerId: detail?.notification?.data?.title,
+          });
         }
       });
-    } else {
-      messaging().setBackgroundMessageHandler(async remoteMessage => {
-        AndroidNotification.showNotification(
-          `${remoteMessage?.notification?.body}`,
-          `${remoteMessage?.notification?.title}`,
-          `${remoteMessage?.data?.Photo}`,
-        );
-      });
-    }
-  });
-
-    return () => {
-      AppStatus?.remove();
-    };
+    });
+    return unsubscribe;
   }, []);
 
   return (

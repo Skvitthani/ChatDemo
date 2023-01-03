@@ -31,15 +31,6 @@ const Creategroup = ({route, navigation}) => {
   const [Users, setUsers] = useState(user);
   const [openModel, setOpenModel] = useState(false);
   const [image, setImage] = useState('');
-  // console.log('image==>', image);
-  console.log('UsersUsers', Users);
-
-  // console.log('UIDUID', userID);
-
-  console.log(activeUser);
-  console.log('activeUseractiveUser', activeUser);
-
-  console.log('groupName', groupName);
 
   const onAuthStateChanged = user => {
     if (user) {
@@ -76,18 +67,18 @@ const Creategroup = ({route, navigation}) => {
         userID.push(i?.sendFrom);
       }
     });
-    console.log('UIDUID', userID);
     const ID = userID?.join('-');
-    console.log('activeUser', activeUser);
-    Users.push(activeUser);
-    console.log('after push', Users);
+    const admin = {
+      admin : "Group Admin"
+    }
+    Object.assign(activeUser,admin)
+    Users.unshift(activeUser);
     const ImageUrl = await storage()
       .ref(imagePath)
       .getDownloadURL()
       .then(url => {
         return url;
       });
-    console.log('URL', ImageUrl);
     let newData = [
       ...Users,
     ]

@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Alert,
-  DeviceEventEmitter,
   FlatList,
   Image,
   StyleSheet,
@@ -19,8 +17,6 @@ import {
 import {ImageConst} from '../utils/helper/ImageConst';
 import Notificationservice from '../../Notificationservice';
 import uuid from 'react-native-uuid';
-import showNotification from '../utils/notification/AndroidNotification';
-import AndroidNotification from '../utils/notification/AndroidNotification';
 
 const Callscreen = () => {
   const [userData, setUserData] = useState([]);
@@ -28,7 +24,7 @@ const Callscreen = () => {
   const [activeUser, setActiveUser] = useState('');
   const [isVoiceCall, setIsVoiceCall] = useState(true);
   console.log('isVoiceCall=>', isVoiceCall);
-  console.log("activeUser==>",activeUser);
+  console.log('activeUser==>', activeUser);
 
   const isFocuse = useIsFocused();
   const navigation = useNavigation();
@@ -62,12 +58,9 @@ const Callscreen = () => {
 
   useEffect(() => {
     auth().onAuthStateChanged(onAuthStateChanged);
-
   }, [isFocuse]);
 
-
   const onVideoCallPress = async item => {
-    console.log(item);
     setIsVoiceCall(false);
     let CallId = uuid.v4();
     let notification = {
@@ -75,14 +68,14 @@ const Callscreen = () => {
       body: 'Video Call',
       token: item?.Token,
       CallId: CallId,
-      Photo : activeUser?.Photo
+      Photo: activeUser?.Photo,
     };
-     Notificationservice.sendSingleDiveceNotifiaction(notification);
+    Notificationservice.sendSingleDiveceNotifiaction(notification);
     console.log('item==>', item);
-    // navigation.navigate('Videocallscreen', {
-    //   CallerId: CallId,
-    //   userName : activeUser
-    // });
+    navigation.navigate('Videocallscreen', {
+      CallerId: CallId,
+      userName: activeUser,
+    });
   };
 
   const onVoiceCallPress = async item => {
@@ -93,14 +86,14 @@ const Callscreen = () => {
       body: 'Voice Call',
       token: item?.Token,
       CallId: CallId,
-      Photo : activeUser?.Photo
+      Photo: activeUser?.Photo,
     };
-     Notificationservice.sendSingleDiveceNotifiaction(notification);
+    Notificationservice.sendSingleDiveceNotifiaction(notification);
     console.log('item==>', item);
-    // navigation.navigate('Voicecallscreen', {
-    //   CallerId: CallId,
-    //   userName : item?.name
-    // });
+    navigation.navigate('Voicecallscreen', {
+      CallerId: CallId,
+      userName: item?.name,
+    });
   };
   return (
     <View style={style.mainStyle}>

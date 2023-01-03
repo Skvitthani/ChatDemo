@@ -1,7 +1,6 @@
-// import PushNotification from "react-native-push-notification";
-import notifee, {AndroidStyle} from '@notifee/react-native';
+import notifee from '@notifee/react-native';
 
-const showNotification = async (title, message, image) => {
+const showNotification = async (title, message, image, CallId) => {
   await notifee.requestPermission();
   const channelId = await notifee.createChannel({
     id: 'default',
@@ -11,6 +10,9 @@ const showNotification = async (title, message, image) => {
   notifee.displayNotification({
     title: title,
     body: message,
+    data: {
+      title: CallId,
+    },
     android: {
       largeIcon: image,
       channelId,
@@ -19,6 +21,7 @@ const showNotification = async (title, message, image) => {
           title: 'Accept',
           pressAction: {
             id: 'Accept',
+            launchActivity: 'default'
           },
         },
         {

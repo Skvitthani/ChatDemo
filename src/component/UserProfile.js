@@ -35,7 +35,7 @@ const Userprofile = props => {
   return (
     <View style={{flex: 1}}>
       {showComponent === false && (
-        <View style={{flex:1}}>
+        <View style={{flex: 1}}>
           <TouchableOpacity
             onPress={onPress}
             style={{marginTop: responsiveScreenHeight(5)}}>
@@ -77,13 +77,16 @@ const Userprofile = props => {
                       <TouchableOpacity
                         style={style.messageListStyle}
                         onPress={() => onItemPress(item)}>
-                        <Image
-                          source={{uri: item?.[1]?.Photo}}
-                          style={style.userProfile}
-                        />
-                        <Text style={style.listUserName}>
-                          {item?.[1]?.name}
-                        </Text>
+                        <View style={{flexDirection : 'row'}}>
+                          <Image
+                            source={{uri: item?.[1]?.Photo}}
+                            style={style.userProfile}
+                          />
+                          <Text style={style.listUserName}>
+                            {item?.[1]?.name}
+                          </Text>
+                        </View>
+                        <Text style={style.adminStyle}>{item?.[1]?.admin}</Text>
                       </TouchableOpacity>
                     </View>
                   );
@@ -105,7 +108,13 @@ const Userprofile = props => {
           )}
         </View>
       )}
-      {showComponent && <Groupmember onPress={onItemPress} userDetail={userDetail} group={group}/>}
+      {showComponent && (
+        <Groupmember
+          onPress={onItemPress}
+          userDetail={userDetail}
+          group={group}
+        />
+      )}
     </View>
   );
 };
@@ -127,11 +136,15 @@ const style = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     flex: 1,
+    justifyContent : 'space-between'
   },
   listUserName: {
     fontSize: 20,
     marginLeft: 30,
     marginTop: 3,
+  },
+  adminStyle: {
+    // alignSelf : 'flex-end'
   },
 });
 
