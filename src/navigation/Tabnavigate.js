@@ -1,56 +1,19 @@
 import React, {useState} from 'react';
-import Homescreen from '../screen/Homescreen';
-import Groupchatscreen from '../screen/Groupchatscreen';
-import Callscreen from '../screen/Callscreen';
+import Homescreen from '../screen/tabscreen/Homescreen';
+import Groupchatscreen from '../screen/tabscreen/Groupchatscreen';
+import Callscreen from '../screen/tabscreen/Callscreen';
 import {TabView, SceneMap} from 'react-native-tab-view';
-import Customheader from '../component/Customheader';
-import {Platform, SafeAreaView, StyleSheet, Text} from 'react-native';
-import {View, StatusBar, TouchableOpacity, Animated} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {View, TouchableOpacity, Animated} from 'react-native';
+import { Customheader } from '../components/Index';
+import Statusscreen from '../screen/tabscreen/Statusscreen';
 
 const renderScene = SceneMap({
   first: Homescreen,
   second: Groupchatscreen,
   thired: Callscreen,
+  fourth: Statusscreen
 });
-
-// const renderTabBar = props => {
-//  let state = {
-//     index: 0,
-//     routes: [
-//       {key: 'first', title: 'First'},
-//       {key: 'second', title: 'Second'},
-//     ],
-//   };
-
-//   const handleIndexChange = index => this.setState({index:index});
-
-//   const inputRange = props.navigationState.routes.map((x, i) => i);
-
-//   return (
-//     <View style={{flexDirection: 'row', paddingTop: StatusBar.currentHeight}}>
-//       {props.navigationState.routes.map((route, i) => {
-//         const opacity = props.position.interpolate({
-//           inputRange,
-//           outputRange: inputRange.map(inputIndex =>
-//             inputIndex === i ? 1 : 0.5,
-//           ),
-//         });
-
-//         return (
-//           <TouchableOpacity
-//             style={{
-//               flex: 1,
-//               alignItems: 'center',
-//               padding: 16,
-//             }}
-//             onPress={() => this.setState({index: i})}>
-//             <Animated.Text style={{opacity}}>{route.title}</Animated.Text>
-//           </TouchableOpacity>
-//         );
-//       })}
-//     </View>
-//   );
-// };
 
 const Tabnavigate = () => {
   const [index, setIndex] = useState(0);
@@ -59,6 +22,7 @@ const Tabnavigate = () => {
     {key: 'first', title: 'Chat'},
     {key: 'second', title: 'Group'},
     {key: 'thired', title: 'Call'},
+    {key: 'fourth', title: 'Status'},
   ]);
 
   const handletextChange = index => setIndex(index);
@@ -110,8 +74,6 @@ const style = StyleSheet.create({
     alignItems: 'center',
     padding: 8,
     backgroundColor: '#2B2D5E',
-    
-    
   },
 });
 

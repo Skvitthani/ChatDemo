@@ -1,17 +1,17 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
-import Chatescreen from '../screen/Chatescreen';
-import Signupscreen from '../screen/Signupscreen';
+import Chatescreen from '../screen/chat/Chatescreen';
+import Signupscreen from '../screen/auth/Signupscreen';
 import {navigationRef} from './NavigateRef';
-import Settingscreen from '../screen/Settingscreen';
-import Groupscreen from '../screen/Groupscreen';
-import Creategroup from '../screen/Creategroup';
+import Groupscreen from '../screen/group/Groupscreen';
+import Creategroup from '../screen/group/Creategroup';
 import Tabnavigate from './Tabnavigate';
-import Userlistscreen from '../screen/Userlistscreen';
-import Notificationscreen from '../screen/Notificationscreen';
-import Voicecallscreen from '../screen/Voicecallscreen';
-import Videocallscreen from '../screen/Videocallscreen';
+import Notificationscreen from '../screen/coman/Notificationscreen';
+import Videocallscreen from '../screen/call/Videocallscreen';
+import Voicecallscreen from '../screen/call/Voicecallscreen';
+import Settingscreen from '../screen/coman/Settingscreen';
+import Userlistscreen from '../screen/coman/Userlistscreen';
 
 const stack = createNativeStackNavigator();
 

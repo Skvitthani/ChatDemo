@@ -1,12 +1,12 @@
 import React, {useEffect} from 'react';
 import {Alert} from 'react-native';
 import {Provider} from 'react-redux';
-import {myStore} from './src/action/store/Store';
 import Navigate from './src/navigation/Navigate';
 import messaging from '@react-native-firebase/messaging';
 import {navigate} from './src/navigation/NavigateRef';
-import AndroidNotification from './src/utils/notification/AndroidNotification';
 import notifee, {EventType} from '@notifee/react-native';
+import Customnotifee from './src/utils/notification/Customnotifee';
+import { myStore } from './src/redux/store/Store';
 
 const App = () => {
   useEffect(() => {
@@ -76,7 +76,7 @@ const App = () => {
     });
     messaging().setBackgroundMessageHandler(async remoteMessage => {
       console.log('backgroung notification', remoteMessage);
-      AndroidNotification.showNotification(
+      Customnotifee.Customnotifee(
         `${remoteMessage?.data?.body}`,
         `${remoteMessage?.data?.title}`,
         `${remoteMessage?.data?.Photo}`,
