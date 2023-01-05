@@ -22,4 +22,5 @@ export const ImageConst = {
   send_message_png: require('/Users/mac/Documents/Chatedemo/src/asset/Image/send-message.png'),
   zoom_png: require('/Users/mac/Documents/Chatedemo/src/asset/Image/zoom.png'),
   user1_png: require('/Users/mac/Documents/Chatedemo/src/asset/Image/user(1).png'),
+  Lotti: require('/Users/mac/Documents/Chatedemo/src/asset/lotti/26803-material-progress-bar.json'),
 };

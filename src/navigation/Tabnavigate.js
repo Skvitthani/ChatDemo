@@ -5,14 +5,14 @@ import Callscreen from '../screen/tabscreen/Callscreen';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import {StyleSheet} from 'react-native';
 import {View, TouchableOpacity, Animated} from 'react-native';
-import { Customheader } from '../components/Index';
+import {Customheader} from '../components/Index';
 import Statusscreen from '../screen/tabscreen/Statusscreen';
 
 const renderScene = SceneMap({
   first: Homescreen,
   second: Groupchatscreen,
   thired: Callscreen,
-  fourth: Statusscreen
+  fourth: Statusscreen,
 });
 
 const Tabnavigate = () => {

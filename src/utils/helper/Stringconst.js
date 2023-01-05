@@ -1,4 +1,5 @@
 export const Stringconst = {
     mySatuts : "My Status",
-    taptoupload : "Tap to add status update"
+    taptoupload : "Tap to add status update",
+    recentUpdate : "Recent update"
 }

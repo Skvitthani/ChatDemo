@@ -1,30 +1,79 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {hp, ImageConst, Stringconst, wp} from '../../utils/helper/index';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
-import {Button} from '../../components/Index';
+import {Button, Status} from '../../components/Index';
 import storage from '@react-native-firebase/storage';
-import firestore from '@react-native-firebase/firestore';
+import firestore, {firebase} from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import moment from 'moment';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 
 const Statusscreen = () => {
   const [openModel, setopenModel] = useState(false);
+  const [userFriendsId, setUserFriendsId] = useState([]);
+  const [userStatus, setUserStatus] = useState([]);
+  const [currentUser, setCurrentUser] = useState([]);
   const [userUID, setUserUID] = useState('');
-  // const [imageURL, setImageURL] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
 
-  const onAuthStateChanged = user => {
+  const navigation = useNavigation();
+  const isFocuse = useIsFocused();
+
+  const onAuthStateChanged = async user => {
     if (user) {
-      console.log('user', user?._user?.uid);
       const userId = user?._user?.uid;
       setUserUID(userId);
+      firestore()
+        .collection('Users')
+        .doc(userId)
+        .get()
+        .then(querySnapshot => {
+          setCurrentUser(querySnapshot.data());
+        });
+      firestore()
+        .collection('Users')
+        .doc(userId)
+        .collection('Firends')
+        .get()
+        .then(snp => {
+          const ID = snp?.docs?.map(snp => {
+            return snp?.id;
+          });
+          setUserFriendsId(ID);
+        });
+      firestore()
+        .collection('Status')
+        .get()
+        .then(snp => {
+          console.log("snp==>",snp.docs);
+          const data = snp?.docs?.map(snap => {
+            console.log("snap==<>".snap);
+            if (userFriendsId.includes(snap?.data().ID)) {
+              return {
+                ...snap?.data(),
+                createdAt: snap?.data()?.createdAt?.toDate(),
+              };
+            }
+          });
+          console.log('data', data);
+          // setUserStatus(data);
+          // console.log('User status', userStatus);
+        });
     }
   };
 
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
+    auth().onAuthStateChanged(onAuthStateChanged);
+  }, [isFocuse]);
 
   const onImageSlectPress = () => {
     ImageCropPicker.openPicker({
@@ -35,6 +84,7 @@ const Statusscreen = () => {
       let imageData = {
         image: image.path,
       };
+      setImageUrl(imageData);
       uploadImage(imageData);
       onCloseModelPress();
     });
@@ -55,51 +105,95 @@ const Statusscreen = () => {
       .then(url => {
         return url;
       });
-    console.log('imageUrl ::', imageURL);
-    // setImageURL(imageURL);
     uploadStatus(imageURL);
   };
 
-  const uploadStatus = (imageURL) => {
-    firestore().collection('status').doc(userUID).set({
-      status: imageURL,
-    });
+  const uploadStatus = imageURL => {
+    firestore()
+      .collection('Status')
+      .doc(userUID)
+      .set({
+        Status: firebase.firestore.FieldValue.arrayUnion({
+          status: imageURL,
+          userName: currentUser?.name,
+          currenuserPhoto: currentUser?.Photo,
+          ID: userUID,
+        }),
+      });
   };
 
   const onCloseModelPress = () => {
     setopenModel(false);
   };
-
   return (
     <View style={style.mainView}>
-      <Modal visible={openModel} animationType="slide">
-        <View style={style.modelView}>
-          <Button
-            text={'Choose  From Gallary'}
-            constButtonStyle={style.buttonView}
-            containFontStyle={{marginRight: 30}}
-            onPress={onImageSlectPress}
-          />
-          <Button
-            text={'Cancle'}
-            constButtonStyle={style.buttonView}
-            containFontStyle={{marginRight: 60}}
-            onPress={onCloseModelPress}
-          />
-        </View>
-      </Modal>
       <View>
-        <TouchableOpacity
-          style={style.uploadStatus}
-          onPress={() => setopenModel(true)}>
-          <View style={style.GroupImageView}>
-            <Image source={ImageConst.user_png} style={style.user_png} />
+        <Modal visible={openModel} animationType="slide">
+          <View style={style.modelView}>
+            <Button
+              text={'Choose  From Gallary'}
+              constButtonStyle={style.buttonView}
+              containFontStyle={{marginRight: 30}}
+              onPress={onImageSlectPress}
+            />
+            <Button
+              text={'Cancle'}
+              constButtonStyle={style.buttonView}
+              containFontStyle={{marginRight: 60}}
+              onPress={onCloseModelPress}
+            />
           </View>
-          <View style={style.textView}>
-            <Text style={style.myStatus}>{Stringconst.mySatuts}</Text>
-            <Text>{Stringconst.taptoupload}</Text>
-          </View>
-        </TouchableOpacity>
+        </Modal>
+        <View>
+          <TouchableOpacity
+            style={style.uploadStatus}
+            onPress={() => setopenModel(true)}>
+            <View style={style.GroupImageView}>
+              {imageUrl ? (
+                <Image
+                  source={{uri: imageUrl?.image}}
+                  style={style.GroupImageView}
+                />
+              ) : (
+                <Image source={ImageConst.user_png} style={style.user_png} />
+              )}
+            </View>
+            <View style={style.textView}>
+              <Text style={style.myStatus}>{Stringconst.mySatuts}</Text>
+              <Text style={{marginLeft: wp(3)}}>{Stringconst.taptoupload}</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <Text style={style.recentUpdate}>{Stringconst.recentUpdate}</Text>
+        <FlatList
+          data={userStatus}
+          renderItem={({item}) => {
+            return (
+              <View>
+                {item !== undefined && (
+                  <TouchableOpacity
+                    style={style.statusStyle}
+                    onPress={() =>
+                      navigation.navigate('Statusshowscreen', {
+                        Status: item,
+                      })
+                    }>
+                    <Image
+                      source={{uri: item?.status}}
+                      style={style.statusImage}
+                    />
+                    <View style={style.nameAndTime}>
+                      <Text style={style.userName}>{item?.userName}</Text>
+                      <Text>
+                        {moment(item?.createdAt).format('DD MMM YYYY')}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              </View>
+            );
+          }}
+        />
       </View>
     </View>
   );
@@ -113,7 +207,6 @@ const style = StyleSheet.create({
     height: hp(7),
     width: wp(15.5),
     borderRadius: 50,
-    marginRight: wp(2),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#D2D6D3',
@@ -134,6 +227,7 @@ const style = StyleSheet.create({
   myStatus: {
     fontWeight: 'bold',
     fontSize: 15,
+    marginLeft: wp(3),
   },
   modelView: {
     backgroundColor: '#E5E5E5',
@@ -152,6 +246,27 @@ const style = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: wp(10),
     width: wp(78),
+  },
+  recentUpdate: {
+    fontWeight: 'bold',
+    fontSize: 15,
+    marginLeft: wp(3),
+  },
+  statusImage: {
+    height: hp(8),
+    width: wp(17),
+    borderRadius: 50,
+  },
+  statusStyle: {
+    flexDirection: 'row',
+    padding: 5,
+  },
+  nameAndTime: {
+    padding: 10,
+  },
+  userName: {
+    fontWeight: 'bold',
+    fontSize: 15,
   },
 });
 

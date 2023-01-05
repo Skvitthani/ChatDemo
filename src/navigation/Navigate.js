@@ -12,6 +12,7 @@ import Videocallscreen from '../screen/call/Videocallscreen';
 import Voicecallscreen from '../screen/call/Voicecallscreen';
 import Settingscreen from '../screen/coman/Settingscreen';
 import Userlistscreen from '../screen/coman/Userlistscreen';
+import Statusshowscreen from '../screen/coman/Statushowscreen';
 
 const stack = createNativeStackNavigator();
 
@@ -68,6 +69,11 @@ const Navigate = () => {
         <stack.Screen
           name="Videocallscreen"
           component={Videocallscreen}
+          options={{headerShown: false}}
+        />
+        <stack.Screen
+          name="Statusshowscreen"
+          component={Statusshowscreen}
           options={{headerShown: false}}
         />
       </stack.Navigator>
