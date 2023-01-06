@@ -12,7 +12,7 @@ import auth from '@react-native-firebase/auth';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {ImageConst} from '../../utils/helper/ImageConst';
 import moment from 'moment';
-import { hp, wp } from '../../utils/helper/globalfunction/Responsivefont';
+import {hp, wp} from '../../utils/helper/globalfunction/Responsivefont';
 
 const Groupchatscreen = () => {
   const [group, setGroup] = useState([]);
@@ -47,10 +47,9 @@ const Groupchatscreen = () => {
           });
           setGroup(data);
         });
-        console.log("Group[",group);
-    } 
+      // console.log('Group[', group);
+    }
   };
-
 
   useEffect(() => {
     auth().onAuthStateChanged(onAuthStateChanged);
@@ -64,70 +63,81 @@ const Groupchatscreen = () => {
     });
   };
 
+  const onGroupPress = () => {
+    navigation.navigate('Groupscreen');
+  };
+
   return (
     <View style={{flex: 1}}>
       <FlatList
         data={group}
         renderItem={({item}) => {
-          // console.log('item==>', item);
-
+          console.log('item:::', item);
           return (
             <View>
-              <TouchableOpacity
-                style={style.messageListStyle}
-                onPress={() => onGroupChatPress(item)}>
-                <View style={{flexDirection: 'row'}}>
-                  <View>
-                    <Image
-                      source={{uri: item?.data?.Photo}}
-                      style={style.userProfile}
-                    />
-                  </View>
-                  <View>
-                    <Text style={style.listUserName}>
-                      {item?.data?.GroupChat}
-                    </Text>
-                    {item?.data?.lastmessage ? (
-                      <>
-                        {item?.data?.lastmessage[0]?.image === '' ? (
-                          <Text style={{marginLeft: 30, marginTop: 2}}>
-                            {item?.data?.lastmessage[0]?.text}
-                          </Text>
-                        ) : (
-                          <View style={{flexDirection: 'row', marginTop: 5}}>
-                            <Image
-                              source={ImageConst.gallery_png}
-                              style={{
-                                height: hp(1.8),
-                                width: wp(4),
-                                marginLeft: 30,
-                              }}
-                            />
-                            <Text style={{marginLeft: 5}}>Photo</Text>
-                          </View>
-                        )}
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </View>
-                </View>
-                {item?.data?.lastmessage ? (
-                  <View style={{marginTop: 5}}>
-                    <Text>
-                      {moment(item?.data?.lastmessage[0]?.createdAt).format(
-                        'DD MMM YYYY',
+              {item !== undefined && (
+                <TouchableOpacity
+                  style={style.messageListStyle}
+                  onPress={() => onGroupChatPress(item)}>
+                  <View style={{flexDirection: 'row'}}>
+                    <View>
+                      <Image
+                        source={{uri: item?.data?.Photo}}
+                        style={style.userProfile}
+                      />
+                    </View>
+                    <View>
+                      <Text style={style.listUserName}>
+                        {item?.data?.GroupChat}
+                      </Text>
+                      {item?.data?.lastmessage ? (
+                        <>
+                          {item?.data?.lastmessage[0]?.image === '' ? (
+                            <Text style={{marginLeft: 30, marginTop: 2}}>
+                              {item?.data?.lastmessage[0]?.text}
+                            </Text>
+                          ) : (
+                            <View style={{flexDirection: 'row', marginTop: 5}}>
+                              <Image
+                                source={ImageConst.gallery_png}
+                                style={{
+                                  height: hp(1.8),
+                                  width: wp(4),
+                                  marginLeft: 30,
+                                }}
+                              />
+                              <Text style={{marginLeft: 5}}>Photo</Text>
+                            </View>
+                          )}
+                        </>
+                      ) : (
+                        <></>
                       )}
-                    </Text>
+                    </View>
                   </View>
-                ) : (
-                  <></>
-                )}
-              </TouchableOpacity>
+                  {item?.data?.lastmessage ? (
+                    <View style={{marginTop: 5}}>
+                      <Text>
+                        {moment(item?.data?.lastmessage[0]?.createdAt).format(
+                          'DD MMM YYYY',
+                        )}
+                      </Text>
+                    </View>
+                  ) : (
+                    <></>
+                  )}
+                </TouchableOpacity>
+              )}
             </View>
           );
         }}
       />
+      <TouchableOpacity style={style.userListButton} onPress={onGroupPress}>
+        <Image
+          source={ImageConst.plus_png}
+          style={{height: 20, width: 20, tintColor: 'white'}}
+        />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -148,6 +158,19 @@ const style = StyleSheet.create({
     fontSize: 20,
     marginLeft: 30,
     marginTop: 3,
+  },
+  userListButton: {
+    backgroundColor: '#2B2D5D',
+    height: hp(6),
+    width: wp(13),
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: hp(5),
+    marginRight: wp(5),
+    borderRadius: 40,
+    position: 'absolute',
+    bottom: 0,
+    right: 15,
   },
 });
 

@@ -5,8 +5,8 @@ import { ImageConst } from '../../utils/helper/ImageConst';
 
 const Groupmember = props => {
   const {onPress, userDetail, group} = props;
-  console.log('userDetail', userDetail);
-  console.log('group', group);
+  // console.log('userDetail', userDetail);
+  // console.log('group', group);
   return (
     <View style={{flex: 1}}>
       <TouchableOpacity

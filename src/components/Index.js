@@ -6,6 +6,7 @@ import Customheader from './header/Customheader';
 import Currentuserprofile from './userprofile/Currentuserprofile';
 import Groupmember from './userprofile/Groupmember';
 import Userprofile from './userprofile/UserProfile';
+import Userphoto from './userprofile/Userphoto';
 
 export {
   LoginComponent,
@@ -16,4 +17,5 @@ export {
   Customheader,
   Groupmember,
   Userprofile,
+  Userphoto
 };

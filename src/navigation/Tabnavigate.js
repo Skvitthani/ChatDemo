@@ -11,8 +11,8 @@ import Statusscreen from '../screen/tabscreen/Statusscreen';
 const renderScene = SceneMap({
   first: Homescreen,
   second: Groupchatscreen,
-  thired: Callscreen,
   fourth: Statusscreen,
+  thired: Callscreen,
 });
 
 const Tabnavigate = () => {
@@ -21,8 +21,8 @@ const Tabnavigate = () => {
   const [routes] = useState([
     {key: 'first', title: 'Chat'},
     {key: 'second', title: 'Group'},
-    {key: 'thired', title: 'Call'},
     {key: 'fourth', title: 'Status'},
+    {key: 'thired', title: 'Call'},
   ]);
 
   const handletextChange = index => setIndex(index);

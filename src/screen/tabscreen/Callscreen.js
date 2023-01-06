@@ -19,9 +19,7 @@ const Callscreen = () => {
   const [userData, setUserData] = useState([]);
   const [activeUserId, setActiveUserID] = useState('');
   const [activeUser, setActiveUser] = useState('');
-  const [isVoiceCall, setIsVoiceCall] = useState(true);
-  console.log('isVoiceCall=>', isVoiceCall);
-  console.log('activeUser==>', activeUser);
+  // console.log('activeUser==>', activeUser);
 
   const isFocuse = useIsFocused();
   const navigation = useNavigation();
@@ -58,7 +56,6 @@ const Callscreen = () => {
   }, [isFocuse]);
 
   const onVideoCallPress = async item => {
-    setIsVoiceCall(false);
     let CallId = uuid.v4();
     let notification = {
       title: activeUser?.name,
@@ -76,7 +73,6 @@ const Callscreen = () => {
   };
 
   const onVoiceCallPress = async item => {
-    setIsVoiceCall(true);
     let CallId = uuid.v4();
     let notification = {
       title: activeUser?.name,

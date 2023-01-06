@@ -13,12 +13,13 @@ import auth from '@react-native-firebase/auth';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {ImageConst} from '../../utils/helper/ImageConst';
 import moment from 'moment';
-import { hp, wp } from '../../utils/helper/globalfunction/Responsivefont';
+import {hp, wp} from '../../utils/helper/globalfunction/Responsivefont';
 
 const Homescreen = () => {
   const [userData, setUserData] = useState([]);
   const [activeUser, setActiveUser] = useState('');
   const [Header, setHeader] = useState('');
+
   const navigation = useNavigation();
 
   // console.log('Header ', Header);
@@ -48,15 +49,13 @@ const Homescreen = () => {
           const data = querySnapshot?.docs?.map(snp => {
             return snp?.data();
           });
-          // console.log('data', data);
           setUserData(data);
         });
+     
     } else {
       console.log('User not available');
     }
   };
-  // console.log('useer', userData);
-  // console.log('activeUser', activeUser);
 
   useEffect(() => {
     auth().onAuthStateChanged(onAuthStateChanged);
@@ -87,7 +86,7 @@ const Homescreen = () => {
                 <TouchableOpacity
                   style={style.messageListStyle}
                   onPress={() => onItemPress(item)}>
-                  <View style={{flexDirection : 'row'}}>
+                  <View style={{flexDirection: 'row'}}>
                     <View>
                       <Image
                         source={{uri: item?.Photo}}
@@ -96,30 +95,42 @@ const Homescreen = () => {
                     </View>
                     <View>
                       <Text style={style.listUserName}>{item?.name}</Text>
-                      {item?.lastmessage ? <>
-                      {item?.lastmessage[0]?.image === '' ? (
-                        <Text style={{marginLeft: 30, marginTop: 2}}>
-                          {item?.lastmessage[0]?.text}
-                        </Text>
+                      {item?.lastmessage ? (
+                        <>
+                          {item?.lastmessage[0]?.image === '' ? (
+                            <Text style={{marginLeft: 30, marginTop: 2}}>
+                              {item?.lastmessage[0]?.text}
+                            </Text>
+                          ) : (
+                            <View style={{flexDirection: 'row', marginTop: 5}}>
+                              <Image
+                                source={ImageConst.gallery_png}
+                                style={{
+                                  height: hp(1.8),
+                                  width: wp(4),
+                                  marginLeft: 30,
+                                }}
+                              />
+                              <Text style={{marginLeft: 5}}>Photo</Text>
+                            </View>
+                          )}
+                        </>
                       ) : (
-                        <View style={{flexDirection: 'row', marginTop: 5}}>
-                          <Image
-                            source={ImageConst.gallery_png}
-                            style={{
-                              height: hp(1.8),
-                              width: wp(4),
-                              marginLeft: 30,
-                            }}
-                          />
-                          <Text style={{marginLeft: 5}}>Photo</Text>
-                        </View>
+                        <></>
                       )}
-                      </> : <></>}
                     </View>
                   </View>
-                  {item?.lastmessage ? <View style={{marginTop: 5}}>
-                    <Text>{moment(item?.lastmessage[0]?.createdAt).format( 'DD MMM YYYY')}</Text>
-                  </View> : <></>}
+                  {item?.lastmessage ? (
+                    <View style={{marginTop: 5}}>
+                      <Text>
+                        {moment(item?.lastmessage[0]?.createdAt).format(
+                          'DD MMM YYYY',
+                        )}
+                      </Text>
+                    </View>
+                  ) : (
+                    <></>
+                  )}
                 </TouchableOpacity>
               </View>
             );
@@ -161,7 +172,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 10,
     paddingHorizontal: 10,
-    justifyContent : 'space-between'
+    justifyContent: 'space-between',
   },
   listUserName: {
     fontSize: 20,

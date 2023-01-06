@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   StatusBar,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import moment from 'moment';
 import {hp, ImageConst, wp} from '../../utils/helper/index';
@@ -14,10 +15,11 @@ import {ProgressBar} from 'react-native-stories-view';
 
 const Statusshowscreen = ({route}) => {
   const Status = route?.params?.Status;
-  console.log('Status Component ::', Status);
+  // console.log('Status Component ::', Status);
   const navigation = useNavigation();
   const [status, setStatus] = useState(0);
-  console.log('status==>', status);
+  const [holdStatus, setHoldStatus] = useState(true);
+  // console.log('status==>', status);
 
   const onChange = () => {
     if (Status?.length - 1 === status) {
@@ -26,6 +28,11 @@ const Statusshowscreen = ({route}) => {
       setStatus(status + 1);
     }
   };
+  
+  // onSwipeDown = (gestureState) =>{
+  //   console.log("gestureState",gestureState);
+  //   navigation.navigate('Tabnavigate')
+  // }
 
   return (
     <View style={styles.container}>
@@ -34,8 +41,8 @@ const Statusshowscreen = ({route}) => {
         images={Status}
         onChange={onChange}
         progressIndex={3}
-        enableProgress={true}
-        duration={5}
+        enableProgress={holdStatus}
+        duration={100}
         barStyle={{
           barWidth: 100,
           barHeight: 4,
@@ -56,10 +63,14 @@ const Statusshowscreen = ({route}) => {
           </Text>
         </View>
       </View>
-      <Image
-        source={{uri: Status?.[status]?.status}}
-        style={styles.statusStyle}
-      />
+      <TouchableWithoutFeedback
+        onLongPress={() => setHoldStatus(false)}
+        onPressOut={() => setHoldStatus(true)}>
+        <Image
+          source={{uri: Status?.[status]?.status}}
+          style={styles.statusStyle}
+        />
+      </TouchableWithoutFeedback>
     </View>
   );
 };

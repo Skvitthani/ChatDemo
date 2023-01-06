@@ -13,6 +13,7 @@ import Voicecallscreen from '../screen/call/Voicecallscreen';
 import Settingscreen from '../screen/coman/Settingscreen';
 import Userlistscreen from '../screen/coman/Userlistscreen';
 import Statusshowscreen from '../screen/coman/Statushowscreen';
+import Addgroupmemberscreen from '../screen/group/Addgroupmemberscreen';
 
 const stack = createNativeStackNavigator();
 
@@ -74,6 +75,11 @@ const Navigate = () => {
         <stack.Screen
           name="Statusshowscreen"
           component={Statusshowscreen}
+          options={{headerShown: false}}
+        />
+        <stack.Screen
+          name="Addgroupmemberscreen"
+          component={Addgroupmemberscreen}
           options={{headerShown: false}}
         />
       </stack.Navigator>

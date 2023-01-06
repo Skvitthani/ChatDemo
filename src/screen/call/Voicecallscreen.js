@@ -11,11 +11,11 @@ const Voicecallscreen = ({route}) => {
 
   const CallerId = route?.params?.CallerId;
   const userName = route?.params?.userName;
-  console.log('Sender==>', CallerId);
-  console.log('userName==>', userName);
+  // console.log('Sender==>', CallerId);
+  // console.log('userName==>', userName);
 
   const userID = String(Math.floor(Math.random() * 10000));
-  console.log("userID==>",userID);
+  // console.log("userID==>",userID);
 
 
   const GroupCallerId = route?.params?.GroupCallerId;

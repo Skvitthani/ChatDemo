@@ -46,7 +46,7 @@ const Groupscreen = () => {
   }, [isFocuse]);
 
   const onBackPress = () => {
-    navigation.navigate('Userlistscreen');
+    navigation.goBack('Userlistscreen');
   };
 
   const addParticipantPress = item => {

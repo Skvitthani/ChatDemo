@@ -17,7 +17,6 @@ import firestore, {firebase} from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
-import { ProgressBar } from 'react-native-stories-view';
 
 const Statusscreen = () => {
   const [openModel, setopenModel] = useState(false);

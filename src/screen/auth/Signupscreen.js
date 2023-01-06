@@ -21,14 +21,14 @@ const Signupscreen = ({navigation}) => {
   const [userPassword, setUserPassword] = useState('');
   const [navigate, setNavigate] = useState(false);
   const [imagePath, setImagePath] = useState('');
-  console.log('imagePathimagePath+++++++=====>', imagePath);
+  // console.log('imagePathimagePath+++++++=====>', imagePath);
 
   const onSignUpPress = async () => {
     const token = await messaging().getToken();
     
     const imagePath = image?.image;
     const reference = storage().ref(`${imagePath}`);
-    console.log('reference', reference?.path);
+    // console.log('reference', reference?.path);
     setImagePath(reference?.path);
     const pathToFile = `${imagePath}`;
     await reference.putFile(pathToFile);
@@ -44,14 +44,14 @@ const Signupscreen = ({navigation}) => {
         password,
       );
       const UID = result?.user?._user?.uid;
-      console.log('resultresult', result?.user?._user?.uid);
+      // console.log('resultresult', result?.user?._user?.uid);
       const ImageUrl = await storage()
         .ref(imagePath)
         .getDownloadURL()
         .then(url => {
           return url;
         });
-      console.log('URL', ImageUrl);
+      // console.log('URL', ImageUrl);
       firestore().collection('Users').doc(UID).set({
         Photo: ImageUrl,
         name: userName,
@@ -76,7 +76,7 @@ const Signupscreen = ({navigation}) => {
         navigation.navigate('Tabnavigate');
         setUserEmail('');
         setPassword('');
-        console.log(res);
+        // console.log(res);
       })
       .catch(() => {
         alert('UserName And Password Not Valid!');

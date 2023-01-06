@@ -22,7 +22,7 @@ const Customheader = () => {
           setHeader(querySnapshot.data());
         });
     } else {
-      console.log('User not available');
+      // console.log('User not available');
     }
   };
 

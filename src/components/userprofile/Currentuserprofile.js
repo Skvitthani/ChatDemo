@@ -3,14 +3,12 @@ import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { ImageConst } from '../../utils/helper/ImageConst';
-import { hp, wp } from '../../utils/helper/globalfunction/Responsivefont';
-// import { hp, wp } from '../../utils/helper/globalfunction/Responsivefont';
-// import { ImageConst } from '../../utils/helper/ImageConst';
+import Userphoto from './Userphoto';
+import { hp, ImageConst, wp } from '../../utils/helper/index';
 
 const Currentuserprofile = ({onPress}) => {
   const [userData, setUserData] = useState([]);
-
+  const [showUserphoto, setShowUserphoto] = useState(false);
   const isFocuse = useIsFocused();
 
   const onAuthStateChanged = async user => {
@@ -24,7 +22,7 @@ const Currentuserprofile = ({onPress}) => {
           setUserData(querySnapshot.data());
         });
     } else {
-      console.log('User not available');
+      // console.log('User not available');
     }
   };
 
@@ -33,28 +31,32 @@ const Currentuserprofile = ({onPress}) => {
     return subscriber;
   }, [isFocuse]);
 
+  const onUserphotoPress = () => {
+    setShowUserphoto(!showUserphoto)
+  }
+
   return (
-    <View>
-      <View style={style.headerstyle}>
-        <TouchableOpacity onPress={onPress}>
-          <Image
-            source={ImageConst.arrow_png}
-            style={style.headerImage}
-          />
-        </TouchableOpacity>
-        <Text style={style.ProfileStyle}>Profile</Text>
-      </View>
-      <Image source={{uri: userData?.Photo}} style={style.profilePic} />
-      <View style={{flexDirection : 'row',marginTop : hp(3)}}>
-        <Image
-          source={ImageConst.user_png}
-          style={style.usericon}
-        />
-        <View>
-            <Text style={{color : '#A7A7A5',fontSize : 20}}>Name</Text>
-            <Text style={{fontSize : 20}}>{userData?.name}</Text>
+    <View style={{flex:1}}>
+      {showUserphoto === false ? <>
+        <View style={style.headerstyle}>
+          <TouchableOpacity onPress={onPress}>
+            <Image source={ImageConst.arrow_png} style={style.headerImage} />
+          </TouchableOpacity>
+          <Text style={style.ProfileStyle}>Profile</Text>
         </View>
-      </View>
+        <TouchableOpacity onPress={onUserphotoPress}>
+          <Image source={{uri: userData?.Photo}} style={style.profilePic} />
+        </TouchableOpacity>
+        <View style={{flexDirection: 'row', marginTop: hp(3)}}>
+          <Image source={ImageConst.user_png} style={style.usericon} />
+          <View>
+            <Text style={{color: '#A7A7A5', fontSize: 20}}>Name</Text>
+            <Text style={{fontSize: 20}}>{userData?.name}</Text>
+          </View>
+        </View>
+      </>
+      :
+      <Userphoto onPress={onUserphotoPress} Photo={userData?.Photo}/>}
     </View>
   );
 };
@@ -91,7 +93,7 @@ const style = StyleSheet.create({
     height: hp(3),
     width: wp(6),
     tintColor: '#A7A7A5',
-    marginHorizontal : wp(5)
+    marginHorizontal: wp(5),
   },
 });
 

@@ -14,7 +14,7 @@ const Settingscreen = ({navigation}) => {
   const [showSetting, setShowSetting] = useState(false);
   const [activeUser, setActiveUser] = useState('');
 
-  console.log('userDatauserData', userData);
+  // console.log('userDatauserData', userData);
 
   const isFocuse = useIsFocused();
 

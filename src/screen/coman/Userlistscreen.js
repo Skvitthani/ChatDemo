@@ -12,8 +12,8 @@ import {
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { ImageConst } from '../../utils/helper/ImageConst';
-import { hp, wp } from '../../utils/helper/globalfunction/Responsivefont';
+import Notificationservice from '../../utils/notification/Notificationservice';
+import {hp, ImageConst, Stringconst, wp} from '../../utils/helper/index';
 
 const Userlistscreen = () => {
   const [userData, setUserData] = useState([]);
@@ -21,19 +21,21 @@ const Userlistscreen = () => {
   const [inputShow, setInputShow] = useState(false);
   const [searchTxt, setSearchTxt] = useState('');
   const [currentUser, setCurrentUser] = useState('');
-  const [currentUserId ,setCurrentUserId] = useState('')
+  const [currentUserId, setCurrentUserId] = useState('');
   const [firend, setFirend] = useState([]);
-  const navigation = useNavigation()
+  const [sendRequest, setSendRequest] = useState([]);
 
-  console.log("firend==>",firend);
-  console.log("currentUser==>",currentUser);
+  const navigation = useNavigation();
+
+  console.log('send request', sendRequest);
+  console.log('userData', userData);
 
   const isFocuse = useIsFocused();
 
   const onAuthStateChanged = async user => {
     if (user) {
       const userUId = user?._user?.uid;
-      setCurrentUserId(userUId)
+      setCurrentUserId(userUId);
       firestore()
         .collection('Users')
         .doc(userUId)
@@ -46,12 +48,13 @@ const Userlistscreen = () => {
         .where('userId', '!=', userUId)
         .get()
         .then(querySnapshot => {
-          const data = querySnapshot?.docs;
-          console.log('data', data);
+          const data = querySnapshot?.docs.map(snap => {
+            return snap?.data();
+          });
           setUserData(data);
           setSearchData(data);
         });
-        firestore()
+      firestore()
         .collection('Users')
         .doc(userUId)
         .collection('Firends')
@@ -61,10 +64,24 @@ const Userlistscreen = () => {
             return snap?.data();
           });
           setFirend(data);
-          console.log('datadata==>', data);
         });
-    } else {
-      console.log('User not available');
+      firestore()
+        .collection('Firends')
+        .where('sendFrom', '==', userUId)
+        .get()
+        .then(snap => {
+          const data = snap.docs.map(snp => {
+            return snp.data();
+          });
+          const ID = data.map(item => {
+            if (item?.sendTo) {
+              return item?.sendTo;
+            }
+          });
+          console.log('ID=>', ID);
+          setSendRequest(ID);
+        });
+      console.log('send request :::', sendRequest);
     }
   };
 
@@ -72,15 +89,14 @@ const Userlistscreen = () => {
     auth().onAuthStateChanged(onAuthStateChanged);
   }, [isFocuse]);
 
-  console.log('firend===>', firend);
-
   const onSearchPress = () => {
     setInputShow(!inputShow);
   };
   const searchFilterFunction = txt => {
+    console.log('txt-==>', txt);
     if (txt) {
       const newData = userData.filter(item => {
-        return item?._data?.name.toUpperCase().includes(txt.toUpperCase());
+        return item?.name.toUpperCase().includes(txt.toUpperCase());
       });
       setUserData(newData);
       setSearchTxt(txt);
@@ -90,32 +106,74 @@ const Userlistscreen = () => {
     }
   };
 
+  const getRequest = () => {
+    firestore()
+      .collection('Firends')
+      .where('sendFrom', '==', currentUserId)
+      .get()
+      .then(snap => {
+        const data = snap.docs.map(snp => {
+          return snp.data();
+        });
+        const ID = data.map(item => {
+          if (item?.sendTo) {
+            return item?.sendTo;
+          }
+        });
+        setSendRequest(ID);
+      });
+    console.log('Hello');
+    console.log('send +++++++++', sendRequest);
+  };
+
   const onAddUserPress = item => {
-    console.log('add user id', item);
-    const ID = item?._data?.userId;
+    let notification = {
+      title: currentUser?.name,
+      body: 'Sent Request',
+      token: item?.Token,
+      Photo: currentUser?.Photo,
+    };
+    Notificationservice.sendSingleDiveceNotifiaction(notification);
+    const ID = item?.userId;
     firestore().collection('Firends').add({
       sendTo: ID,
       sendFrom: currentUserId,
       Photo: currentUser?.Photo,
       name: currentUser?.name,
-      Token : currentUser?.Token
+      Token: currentUser?.Token,
     });
+    getRequest();
   };
-  // console.log('currentUsercurrentUser', currentUser);
 
   const name = firend.map(item => {
     if (item?.name) {
       return item?.name;
     }
   });
-  // console.log('namename', name);
 
   const onbackPress = () => {
-    navigation.navigate('Tabnavigate')
-  }
+    navigation.navigate('Tabnavigate');
+  };
   const onGroupPress = () => {
-    navigation.navigate('Groupscreen')
-  }
+    navigation.navigate('Groupscreen');
+  };
+
+  const onRemovePress = item => {
+    const remove = firend.filter(Item => Item?.sendFrom !== item?.userId);
+    setFirend(remove);
+    firestore()
+      .collection('Users')
+      .doc(currentUserId)
+      .collection('Firends')
+      .doc(item?.userId)
+      .delete();
+    firestore()
+      .collection('Users')
+      .doc(item?.userId)
+      .collection('Firends')
+      .doc(currentUserId)
+      .delete();
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -123,10 +181,7 @@ const Userlistscreen = () => {
         <View style={style.headerStyle}>
           <View style={{flexDirection: 'row'}}>
             <TouchableOpacity onPress={onbackPress}>
-              <Image
-                source={ImageConst.arrow_png}
-                style={style.headerImage}
-              />
+              <Image source={ImageConst.arrow_png} style={style.headerImage} />
             </TouchableOpacity>
             <View style={{marginLeft: wp(5)}}>
               <Text style={{color: 'white', fontSize: 17}}>Select User</Text>
@@ -160,88 +215,93 @@ const Userlistscreen = () => {
           />
         </View>
       )}
-      <ScrollView>
-        {inputShow === false && (
-          <View>
-            <TouchableOpacity style={style.messageListStyle} onPress={onGroupPress}>
-              <View style={style.contectView}>
-                <Image
-                  source={ImageConst.group_png}
-                  style={style.contectImage}
-                />
-              </View>
-              <Text style={style.listUserName}>New Group</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={style.messageListStyle}>
-              <View style={style.contectView}>
-                <Image
-                  source={ImageConst.add_user_png}
-                  style={style.contectImage}
-                />
-              </View>
-              <Text style={style.listUserName}>New Contact</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={style.messageListStyle}>
-              <View style={style.contectView}>
-                <Image
-                  source={ImageConst.multiple_users_silhouette_png}
-                  style={style.contectImage}
-                />
-              </View>
-              <Text style={style.listUserName}>New community</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        <Text style={style.users}>Users</Text>
-        <View style={{flexDirection: 'row', flex: 1}}>
-          <FlatList
-            data={userData}
-            renderItem={({item}) => {
-              console.log('itemitem', item);
-              return (
-                <View
-                  style={[
-                    style.messageListStyle,
-                    {justifyContent: 'space-between'},
-                  ]}>
-                  <View style={{flexDirection: 'row'}}>
+      <FlatList
+        ListHeaderComponent={() => {
+          return (
+            inputShow === false && (
+              <View>
+                <TouchableOpacity
+                  style={style.messageListStyle}
+                  onPress={onGroupPress}>
+                  <View style={style.contectView}>
                     <Image
-                      source={{uri: item?._data?.Photo}}
-                      style={style.userProfile}
+                      source={ImageConst.group_png}
+                      style={style.contectImage}
                     />
-                    <Text style={style.listUserName}>{item?._data?.name}</Text>
                   </View>
-                  {name.includes(item?._data?.name) ? (
+                  <Text style={style.listUserName}>New Group</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={style.messageListStyle}>
+                  <View style={style.contectView}>
                     <Image
-                      source={ImageConst.images_removebg_preview_png}
-                      style={style.firends}
+                      source={ImageConst.add_user_png}
+                      style={style.contectImage}
                     />
-                  ) : (
-                    <TouchableOpacity
-                      style={{alignSelf: 'center'}}
-                      onPress={() => onAddUserPress(item)}>
-                      <Image
-                        source={ImageConst.add_friend_png}
-                        style={style.addFirend}
-                      />
-                    </TouchableOpacity>
-                  )}
+                  </View>
+                  <Text style={style.listUserName}>New Contact</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={style.messageListStyle}>
+                  <View style={style.contectView}>
+                    <Image
+                      source={ImageConst.multiple_users_silhouette_png}
+                      style={style.contectImage}
+                    />
+                  </View>
+                  <Text style={style.listUserName}>New community</Text>
+                </TouchableOpacity>
+                <Text style={style.users}>Users</Text>
+              </View>
+            )
+          );
+        }}
+        data={userData}
+        renderItem={({item}) => {
+          console.log('item ::', item?.userId);
+          return (
+            <View
+              style={[
+                style.messageListStyle,
+                {justifyContent: 'space-between'},
+              ]}>
+              <View style={{flexDirection: 'row'}}>
+                <Image source={{uri: item?.Photo}} style={style.userProfile} />
+                <Text style={style.listUserName}>{item?.name}</Text>
+              </View>
+              {name.includes(item?.name) ? (
+                <TouchableOpacity
+                  style={style.removeView}
+                  onPress={() => onRemovePress(item)}>
+                  <Text style={style.sendRequest}>{Stringconst.remove}</Text>
+                </TouchableOpacity>
+              ) : sendRequest.includes(item?.userId) ? (
+                <View style={style.requestSentView}>
+                  <Text style={style.sendRequest}>
+                    {Stringconst.requestSent}
+                  </Text>
                 </View>
-              );
-            }}
-          />
-        </View>
-      </ScrollView>
+              ) : (
+                <TouchableOpacity
+                  style={style.sendRequestView}
+                  onPress={() => onAddUserPress(item)}>
+                  <Text style={style.sendRequest}>
+                    {Stringconst.sendRequest}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          );
+        }}
+      />
     </View>
   );
 };
 
 const style = StyleSheet.create({
   headerStyle: {
-    height: hp(14),
+    height: hp(11),
     backgroundColor: '#2B2D5E',
     paddingHorizontal: 10,
-    paddingTop: 55,
+    paddingTop: hp(4),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
@@ -317,6 +377,36 @@ const style = StyleSheet.create({
     fontWeight: '700',
     color: '#2B2D5E',
     marginLeft: 5,
+  },
+  sendRequestView: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: hp(3.4),
+    width: wp(27),
+    borderRadius: 10,
+    backgroundColor: '#3E62FF',
+  },
+  sendRequest: {
+    color: 'white',
+  },
+  removeView: {
+    height: hp(3.4),
+    width: wp(27),
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    backgroundColor: '#797979',
+  },
+  requestSentView: {
+    alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: hp(3.4),
+    width: wp(27),
+    backgroundColor: '#B3B3B3',
+    borderRadius: 10,
   },
 });
 

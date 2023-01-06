@@ -50,6 +50,7 @@
     "react-native-stories-media": "^0.0.7",
     "react-native-stories-view": "^1.0.9",
     "react-native-svg": "^13.6.0",
+    "react-native-swipe-gestures": "^1.0.5",
     "react-native-tab-view": "^3.3.4",
     "react-native-uuid": "^2.0.1",
     "react-redux": "^8.0.5",

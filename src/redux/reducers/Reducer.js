@@ -7,7 +7,7 @@ const INITIAL_STATE = {
 const Reducers = (state= INITIAL_STATE,action) => {
     switch (action.type) {
         case SEND_MESSAGE:
-            console.log("action.payload::",action?.payload);
+            // console.log("action.payload::",action?.payload);
             return {
                 ...state, 
                 userData : [...state?.userData, action?.payload]

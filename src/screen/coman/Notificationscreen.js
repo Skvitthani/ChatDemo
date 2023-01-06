@@ -10,8 +10,7 @@ import {
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import {ImageConst} from '../../utils/helper/ImageConst';
-import { hp, wp } from '../../utils/helper/globalfunction/Responsivefont';
+import {hp, ImageConst, Stringconst, wp} from '../../utils/helper/index';
 
 const Notificationscreen = ({navigation}) => {
   const [activeUser, setActiveUser] = useState();
@@ -19,7 +18,7 @@ const Notificationscreen = ({navigation}) => {
   const [matchRequest, setMatchRequest] = useState([]);
   const [matchId, setMatchId] = useState([]);
 
-  console.log('activeUser==>', activeUser);
+  // console.log('activeUser==>', activeUser);
 
   const isFocuse = useIsFocused();
 
@@ -32,10 +31,10 @@ const Notificationscreen = ({navigation}) => {
         .doc(userUId)
         .get()
         .then(snp => {
-          console.log('snp', snp?.data());
+          // console.log('snp', snp?.data());
           setActiveUser(snp?.data());
         });
-      console.log('userUIduserUId', userUId);
+      // console.log('userUIduserUId', userUId);
       firestore()
         .collection('Firends')
         .where('sendTo', '==', userUId)
@@ -44,27 +43,28 @@ const Notificationscreen = ({navigation}) => {
           const data = querySnapshot?.docs?.map(snp => {
             return snp?.data();
           });
-          console.log('data', data);
+          // console.log('data', data);
           setMatchRequest(data);
           const id = querySnapshot?.docs?.map(snp => {
             return snp?.id;
           });
-          console.log('id', id);
+          // console.log('id', id);
           setMatchId(id);
         });
     }
   };
-  console.log('activeUserUID==>', activeUserUID);
+  // console.log('activeUserUID==>', activeUserUID);
+  // console.log('matchRequest==>', matchRequest);
 
   useEffect(() => {
     auth().onAuthStateChanged(onAuthStateChanged);
   }, [isFocuse]);
 
-  console.log('active user', activeUser);
+  // console.log('active user', activeUser);
 
   const onAddPress = (item, index) => {
-    console.log('indexindex', index);
-    console.log('item', item);
+    // console.log('indexindex', index);
+    // console.log('item', item);
     firestore()
       .collection('Users')
       .doc(activeUserUID)
@@ -83,26 +83,30 @@ const Notificationscreen = ({navigation}) => {
         sendTo: item?.sendFrom,
         Token: activeUser?.Token,
       });
-
+    const data = matchRequest.filter((Item, Index) => Index !== index);
+    // console.log('data==>', data);
+    setMatchRequest(data);
     const deleteId = matchId?.filter((id, indexs) => {
       if (indexs === index) {
         return id;
       }
     });
     const id = deleteId[0];
-    console.log('deleteIddeleteId', id);
-
+    // console.log('deleteIddeleteId', id);
     firestore().collection('Firends').doc(id).delete();
   };
 
   const onCancelPress = (item, index) => {
+    const data = matchRequest.filter((Item, Index) => Index !== index);
+    // console.log('data==>', data);
+    setMatchRequest(data);
     const deleteId = matchId?.filter((id, indexs) => {
       if (indexs === index) {
         return id;
       }
     });
     const id = deleteId[0];
-    console.log('deleteIddeleteId', id);
+    // console.log('deleteIddeleteId', id);
 
     firestore().collection('Firends').doc(id).delete();
   };
@@ -112,7 +116,7 @@ const Notificationscreen = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={style.mainView}>
       <View style={style.headerstyle}>
         <TouchableOpacity onPress={onbackPress}>
           <Image source={ImageConst.arrow_png} style={style.headerImage} />
@@ -120,6 +124,13 @@ const Notificationscreen = ({navigation}) => {
         <Text style={style.ProfileStyle}>Request</Text>
       </View>
       <FlatList
+        ListEmptyComponent={() => {
+          return (
+            <View style={style.listEmptyComponent}>
+              <Text style={style.norequest}>{Stringconst.norequest}</Text>
+            </View>
+          );
+        }}
         data={matchRequest}
         renderItem={({item, index}) => {
           //   console.log('items======', item);
@@ -159,6 +170,9 @@ const Notificationscreen = ({navigation}) => {
   );
 };
 const style = StyleSheet.create({
+  mainView: {
+    flex: 1,
+  },
   headerstyle: {
     backgroundColor: '#2B2D5E',
     height: hp(10),
@@ -198,6 +212,13 @@ const style = StyleSheet.create({
   addFriend: {
     height: hp(2.3),
     width: wp(5),
+  },
+  listEmptyComponent: {
+    alignItems: 'center',
+  },
+  norequest: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 

@@ -8,21 +8,17 @@ import {
   View,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-import {
-  Bubble,
-  GiftedChat,
-  InputToolbar,
-  Send,
-} from 'react-native-gifted-chat';
-import {ImageConst} from '../../utils/helper/ImageConst';
+import {Bubble, GiftedChat, InputToolbar, Send} from 'react-native-gifted-chat';
+// import {ImageConst} from '../../utils/helper/ImageConst';
 import Modal from 'react-native-modal';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import storage from '@react-native-firebase/storage';
 import uuid from 'react-native-uuid';
 import Notificationservice from '../../utils/notification/Notificationservice';
 import {useIsFocused} from '@react-navigation/native';
-import { Button, Userprofile } from '../../components/Index';
-import { hp, wp } from '../../utils/helper/globalfunction/Responsivefont';
+import {Button, Userprofile} from '../../components/Index';
+// import {hp, wp} from '../../utils/helper/globalfunction/Responsivefont';
+import {hp, ImageConst, Stringconst, wp} from '../../utils/helper/index';
 
 const Chatescreen = ({route, navigation}) => {
   const items = route?.params?.item;
@@ -32,6 +28,7 @@ const Chatescreen = ({route, navigation}) => {
   const group = route?.params?.groupData;
   const UID = group?.id;
   const GroupMembers = group?.data?.GroupData;
+  console.log("UID==>",UID);
 
   const takeToken = GroupMembers?.map(token => {
     if (token?.Token && token?.Token !== currentUser?.Token) {
@@ -47,6 +44,7 @@ const Chatescreen = ({route, navigation}) => {
   const [ImageUrl, setImageUrl] = useState('');
   const [lastMessage, setLastMessage] = useState([]);
   const [groupLastMessage, setGroupLastMessage] = useState([]);
+  const [addGroupMemberModel, setAddGroupMemberModel] = useState(false);
 
   const isFocuse = useIsFocused();
 
@@ -291,15 +289,15 @@ const Chatescreen = ({route, navigation}) => {
 
   const onVideoCallPress = async () => {
     if (group) {
-      console.log('on Group Video Call Press');
+      // console.log('on Group Video Call Press');
       let CallId = uuid.v4();
-      console.log('CallId==>',CallId);
+      // console.log('CallId==>',CallId);
       let notification = {
         title: currentUser?.name,
         body: 'Group Video Call',
         CallId: CallId,
         token: takeToken,
-        Photo : group?.data?.Photo
+        Photo: group?.data?.Photo,
       };
       Notificationservice.sendMultiDiveceNotification(notification);
       navigation.navigate('Videocallscreen', {
@@ -312,7 +310,7 @@ const Chatescreen = ({route, navigation}) => {
         body: 'Video Call',
         token: items?.Token,
         CallId: CallId,
-        Photo : currentUser?.Photo
+        Photo: currentUser?.Photo,
       };
       await Notificationservice.sendSingleDiveceNotifiaction(notification);
       navigation.navigate('Videocallscreen', {
@@ -323,28 +321,28 @@ const Chatescreen = ({route, navigation}) => {
 
   const onVoiceCallPress = async () => {
     if (group) {
-      console.log('on Group Voice Call Press');
+      // console.log('on Group Voice Call Press');
       let CallId = uuid.v4();
       let notification = {
         title: currentUser?.name,
         body: 'Group Voice Call',
         CallId: CallId,
         token: takeToken,
-        Photo : group?.data?.Photo
+        Photo: group?.data?.Photo,
       };
       Notificationservice.sendMultiDiveceNotification(notification);
       navigation.navigate('Voicecallscreen', {
         GroupCallerId: CallId,
       });
     } else {
-      console.log('on Voice Call Press');
+      // console.log('on Voice Call Press');
       let CallId = uuid.v4();
       let notification = {
         title: currentUser?.name,
         body: 'Voice Call',
         token: items?.Token,
         CallId: CallId,
-        Photo : currentUser?.Photo
+        Photo: currentUser?.Photo,
       };
       Notificationservice.sendSingleDiveceNotifiaction(notification);
       navigation.navigate('Voicecallscreen', {
@@ -514,10 +512,7 @@ const style = StyleSheet.create({
     paddingVertical: 10,
   },
   headerStyle: {
-    height:
-      Platform.OS === 'ios'
-        ? hp(14)
-        : hp(12),
+    height: Platform.OS === 'ios' ? hp(14) : hp(12),
     backgroundColor: '#2B2D5E',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -538,19 +533,6 @@ const style = StyleSheet.create({
     tintColor: 'white',
     marginTop: 10,
   },
-  modelView: {
-    backgroundColor: 'white',
-    alignSelf: 'center',
-    borderTopLeftRadius: 20,
-    borderBottomStartRadius: 20,
-    borderBottomEndRadius: 20,
-    width: wp(35),
-    height: hp(15),
-    marginTop: hp(7),
-    position: 'absolute',
-    top: 0,
-    right: wp(2),
-  },
   userProfile: {
     height: hp(6.2),
     width: wp(14),
@@ -558,6 +540,7 @@ const style = StyleSheet.create({
     marginLeft: 20,
   },
   headerProfile: {
+    flex: 1,
     flexDirection: 'row',
     width: wp(70),
   },
