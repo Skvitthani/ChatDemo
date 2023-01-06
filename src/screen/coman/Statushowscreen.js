@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -10,51 +10,56 @@ import {
 import moment from 'moment';
 import {hp, ImageConst, wp} from '../../utils/helper/index';
 import {useNavigation} from '@react-navigation/native';
-import * as Progress from 'react-native-progress';
+import {ProgressBar} from 'react-native-stories-view';
+
 const Statusshowscreen = ({route}) => {
   const Status = route?.params?.Status;
   console.log('Status Component ::', Status);
   const navigation = useNavigation();
-  const [listtime, setListTime] = useState(0);
+  const [status, setStatus] = useState(0);
+  console.log('status==>', status);
 
-  useEffect(() => {
-    const timers = setInterval(() => {
-      setListTime(list => list + 1);
-      listtime === 10 && navigation.navigate('Tabnavigate');
-    }, 1000);
+  const onChange = () => {
+    if (Status?.length - 1 === status) {
+      navigation.navigate('Tabnavigate');
+    } else {
+      setStatus(status + 1);
+    }
+  };
 
-    return () => {
-      clearTimeout(timers);
-    };
-  }, [listtime]);
-
-  console.log('listtime', listtime / 10);
   return (
     <View style={styles.container}>
       <StatusBar hidden={true} />
-      <Progress.Bar
-        style={{marginTop: hp(2), marginLeft: wp(1)}}
-        color="white"
-        width={wp(97)}
-        height={hp(0.7)}
-        progress={listtime / 10}
+      <ProgressBar
+        images={Status}
+        onChange={onChange}
+        progressIndex={3}
+        enableProgress={true}
+        duration={5}
+        barStyle={{
+          barWidth: 100,
+          barHeight: 4,
+        }}
       />
       <View style={styles.statusDetali}>
         <TouchableOpacity onPress={() => navigation.navigate('Tabnavigate')}>
           <Image source={ImageConst.arrow_png} style={styles.backArro} />
         </TouchableOpacity>
         <Image
-          source={{uri: Status?.currenuserPhoto}}
+          source={{uri: Status?.[status]?.currenuserPhoto}}
           style={styles.currenuserPhoto}
         />
         <View>
-          <Text style={{color: 'white'}}>{Status?.userName}</Text>
+          <Text style={{color: 'white'}}>{Status?.[status]?.userName}</Text>
           <Text style={{color: 'white'}}>
-            {moment(Status?.createdAt).format('DD MMM YYYY')}
+            {moment(Status?.[status]?.createdAt).format('DD MMM YYYY')}
           </Text>
         </View>
       </View>
-      <Image source={{uri: Status?.status}} style={styles.statusStyle} />
+      <Image
+        source={{uri: Status?.[status]?.status}}
+        style={styles.statusStyle}
+      />
     </View>
   );
 };

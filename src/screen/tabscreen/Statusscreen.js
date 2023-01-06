@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
+  Animated,
   FlatList,
   Image,
   StyleSheet,
@@ -10,12 +11,13 @@ import {
 import {hp, ImageConst, Stringconst, wp} from '../../utils/helper/index';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import Modal from 'react-native-modal';
-import {Button, Status} from '../../components/Index';
+import {Button} from '../../components/Index';
 import storage from '@react-native-firebase/storage';
 import firestore, {firebase} from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import moment from 'moment';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
+import { ProgressBar } from 'react-native-stories-view';
 
 const Statusscreen = () => {
   const [openModel, setopenModel] = useState(false);
@@ -50,23 +52,21 @@ const Statusscreen = () => {
           });
           setUserFriendsId(ID);
         });
+      // console.log("Friends ID ;:",userFriendsId);
       firestore()
         .collection('Status')
         .get()
         .then(snp => {
-          console.log("snp==>",snp.docs);
-          const data = snp?.docs?.map(snap => {
-            console.log("snap==<>".snap);
-            if (userFriendsId.includes(snap?.data().ID)) {
-              return {
-                ...snap?.data(),
-                createdAt: snap?.data()?.createdAt?.toDate(),
-              };
+          // console.log("snp==>",snp.docs);
+          const status = snp?.docs?.map(snap => {
+            // console.log("snap ::",snap.id);
+            if (userFriendsId.includes(snap.id)) {
+              return snap?.data().Status;
             }
           });
-          console.log('data', data);
-          // setUserStatus(data);
-          // console.log('User status', userStatus);
+          setUserStatus(status);
+          // console.log("Status ::",status);
+          // console.log("User Status ::",userStatus);
         });
     }
   };
@@ -112,7 +112,7 @@ const Statusscreen = () => {
     firestore()
       .collection('Status')
       .doc(userUID)
-      .set({
+      .update({
         Status: firebase.firestore.FieldValue.arrayUnion({
           status: imageURL,
           userName: currentUser?.name,
@@ -168,6 +168,7 @@ const Statusscreen = () => {
         <FlatList
           data={userStatus}
           renderItem={({item}) => {
+            // console.log("item :::",item?.[0]);
             return (
               <View>
                 {item !== undefined && (
@@ -179,13 +180,13 @@ const Statusscreen = () => {
                       })
                     }>
                     <Image
-                      source={{uri: item?.status}}
+                      source={{uri: item?.[0]?.status}}
                       style={style.statusImage}
                     />
                     <View style={style.nameAndTime}>
-                      <Text style={style.userName}>{item?.userName}</Text>
+                      <Text style={style.userName}>{item?.[0]?.userName}</Text>
                       <Text>
-                        {moment(item?.createdAt).format('DD MMM YYYY')}
+                        {moment(item?.[0]?.createdAt).format('DD MMM YYYY')}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -267,6 +268,15 @@ const style = StyleSheet.create({
   userName: {
     fontWeight: 'bold',
     fontSize: 15,
+  },
+  progressBar: {
+    height: 20,
+    flexDirection: 'row',
+    width: '100%',
+    backgroundColor: 'white',
+    borderColor: '#000',
+    borderWidth: 2,
+    borderRadius: 5,
   },
 });
 

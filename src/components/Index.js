@@ -6,7 +6,6 @@ import Customheader from './header/Customheader';
 import Currentuserprofile from './userprofile/Currentuserprofile';
 import Groupmember from './userprofile/Groupmember';
 import Userprofile from './userprofile/UserProfile';
-import Status from './userprofile/Status';
 
 export {
   LoginComponent,
@@ -17,5 +16,4 @@ export {
   Customheader,
   Groupmember,
   Userprofile,
-  Status
 };
