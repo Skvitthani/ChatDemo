@@ -7,15 +7,24 @@ import {
   TouchableOpacity,
   StatusBar,
   TouchableWithoutFeedback,
+  Platform,
+  SafeAreaView,
+  Alert,
 } from 'react-native';
 import moment from 'moment';
 import {hp, ImageConst, wp} from '../../utils/helper/index';
 import {useNavigation} from '@react-navigation/native';
-import {ProgressBar} from 'react-native-stories-view';
+import {ProgressBar, StoryContainer} from 'react-native-stories-view';
 
 const Statusshowscreen = ({route}) => {
   const Status = route?.params?.Status;
-  // console.log('Status Component ::', Status);
+  console.log('Status Component ::', Status);
+  const Images = Status.map(i => {
+    if (i.status) {
+      return i.status;
+    }
+  });
+  console.log('Image ::', Images);
   const navigation = useNavigation();
   const [status, setStatus] = useState(0);
   const [holdStatus, setHoldStatus] = useState(true);
@@ -28,50 +37,48 @@ const Statusshowscreen = ({route}) => {
       setStatus(status + 1);
     }
   };
-  
-  // onSwipeDown = (gestureState) =>{
-  //   console.log("gestureState",gestureState);
-  //   navigation.navigate('Tabnavigate')
-  // }
 
   return (
-    <View style={styles.container}>
-      <StatusBar hidden={true} />
-      <ProgressBar
-        images={Status}
-        onChange={onChange}
-        progressIndex={3}
-        enableProgress={holdStatus}
-        duration={100}
-        barStyle={{
-          barWidth: 100,
-          barHeight: 4,
-        }}
-      />
-      <View style={styles.statusDetali}>
-        <TouchableOpacity onPress={() => navigation.navigate('Tabnavigate')}>
-          <Image source={ImageConst.arrow_png} style={styles.backArro} />
-        </TouchableOpacity>
-        <Image
-          source={{uri: Status?.[status]?.currenuserPhoto}}
-          style={styles.currenuserPhoto}
+    <SafeAreaView style={styles.container}>
+      <View>
+        <StatusBar hidden={true} />
+        <ProgressBar
+          images={Status}
+          onChange={onChange}
+          progressIndex={status}
+          enableProgress={holdStatus}
+          duration={100}
+          barStyle={{
+            barWidth: 100,
+            barHeight: 4,
+          }}
         />
-        <View>
-          <Text style={{color: 'white'}}>{Status?.[status]?.userName}</Text>
-          <Text style={{color: 'white'}}>
-            {moment(Status?.[status]?.createdAt).format('DD MMM YYYY')}
-          </Text>
+        <View style={styles.statusDetali}>
+          <TouchableOpacity onPress={() => navigation.navigate('Tabnavigate')}>
+            <Image source={ImageConst.arrow_png} style={styles.backArro} />
+          </TouchableOpacity>
+          <Image
+            source={{uri: Status?.[status]?.currenuserPhoto}}
+            style={styles.currenuserPhoto}
+          />
+          <View>
+            <Text style={{color: 'white'}}>{Status?.[status]?.userName}</Text>
+            <Text style={{color: 'white'}}>
+              {moment(Status?.[status]?.createdAt).format('DD MMM YYYY')}
+            </Text>
+          </View>
         </View>
+        <TouchableWithoutFeedback
+          onPress={onChange}
+          onLongPress={() => setHoldStatus(false)}
+          onPressOut={() => setHoldStatus(true)}>
+          <Image
+            source={{uri: Status?.[status]?.status}}
+            style={styles.statusStyle}
+          />
+        </TouchableWithoutFeedback>
       </View>
-      <TouchableWithoutFeedback
-        onLongPress={() => setHoldStatus(false)}
-        onPressOut={() => setHoldStatus(true)}>
-        <Image
-          source={{uri: Status?.[status]?.status}}
-          style={styles.statusStyle}
-        />
-      </TouchableWithoutFeedback>
-    </View>
+    </SafeAreaView>
   );
 };
 

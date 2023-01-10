@@ -33,11 +33,11 @@ const Groupscreen = () => {
           const data = querySnapshot?.docs?.map(snp => {
             return snp?.data();
           });
-          console.log('data', data);
+          // console.log('data', data);
           setUserData(data);
         });
     } else {
-      console.log('User not available');
+      // console.log('User not available');
     }
   };
 
@@ -50,7 +50,7 @@ const Groupscreen = () => {
   };
 
   const addParticipantPress = item => {
-    console.log('items', item);
+    // console.log('items', item);
     const filter = addFirend.filter(i => {
       if (i?.name === item?.name) {
         return item;
@@ -69,7 +69,7 @@ const Groupscreen = () => {
       }
     });
     setAddFirend(afterRemove);
-    console.log('afterRemove==>', afterRemove);
+    // console.log('afterRemove==>', afterRemove);
   };
 
   const onCreatePress = () => {

@@ -8,5 +8,7 @@ export const Stringconst = {
     remove : 'remove',
     addGroupMember : 'Add Group Member',
     Participants : 'Participants',
-    Group : 'Group'
+    Group : 'Group',
+    added : 'Added',
+    add : "Add"
 }

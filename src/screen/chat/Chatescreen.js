@@ -28,7 +28,7 @@ const Chatescreen = ({route, navigation}) => {
   const group = route?.params?.groupData;
   const UID = group?.id;
   const GroupMembers = group?.data?.GroupData;
-  console.log("UID==>",UID);
+  // console.log("UID==>",UID);
 
   const takeToken = GroupMembers?.map(token => {
     if (token?.Token && token?.Token !== currentUser?.Token) {

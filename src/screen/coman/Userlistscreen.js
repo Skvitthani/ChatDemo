@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -27,8 +28,8 @@ const Userlistscreen = () => {
 
   const navigation = useNavigation();
 
-  console.log('send request', sendRequest);
-  console.log('userData', userData);
+  // console.log('send request', sendRequest);
+  // console.log('userData', userData);
 
   const isFocuse = useIsFocused();
 
@@ -78,10 +79,10 @@ const Userlistscreen = () => {
               return item?.sendTo;
             }
           });
-          console.log('ID=>', ID);
+          // console.log('ID=>', ID);
           setSendRequest(ID);
         });
-      console.log('send request :::', sendRequest);
+      // console.log('send request :::', sendRequest);
     }
   };
 
@@ -93,7 +94,7 @@ const Userlistscreen = () => {
     setInputShow(!inputShow);
   };
   const searchFilterFunction = txt => {
-    console.log('txt-==>', txt);
+    // console.log('txt-==>', txt);
     if (txt) {
       const newData = userData.filter(item => {
         return item?.name.toUpperCase().includes(txt.toUpperCase());
@@ -122,8 +123,8 @@ const Userlistscreen = () => {
         });
         setSendRequest(ID);
       });
-    console.log('Hello');
-    console.log('send +++++++++', sendRequest);
+    // console.log('Hello');
+    // console.log('send +++++++++', sendRequest);
   };
 
   const onAddUserPress = item => {
@@ -256,7 +257,7 @@ const Userlistscreen = () => {
         }}
         data={userData}
         renderItem={({item}) => {
-          console.log('item ::', item?.userId);
+          // console.log('item ::', item?.userId);
           return (
             <View
               style={[
@@ -298,10 +299,10 @@ const Userlistscreen = () => {
 
 const style = StyleSheet.create({
   headerStyle: {
-    height: hp(11),
+    height: Platform.OS === 'ios' ? hp(13) : hp(11),
     backgroundColor: '#2B2D5E',
     paddingHorizontal: 10,
-    paddingTop: hp(4),
+    paddingTop: Platform.OS === 'ios' ? hp(6.5) : hp(4),
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

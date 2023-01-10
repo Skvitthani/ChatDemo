@@ -20,7 +20,7 @@ import {hp, wp} from '../../utils/helper/globalfunction/Responsivefont';
 
 const Creategroup = ({route, navigation}) => {
   const user = route?.params?.paricipant;
-  console.log('user', user);
+  // console.log('user', user);
 
   const [groupName, setGroupName] = useState('');
   const [activeUser, setActiveUser] = useState();
@@ -33,7 +33,7 @@ const Creategroup = ({route, navigation}) => {
     if (user) {
       const userUId = user?._user?.uid;
       setUserID([userUId]);
-      console.log(userUId);
+      // console.log(userUId);
       firestore()
         .collection('Users')
         .doc(userUId)
@@ -56,7 +56,6 @@ const Creategroup = ({route, navigation}) => {
   const onCreateGroupPress = async () => {
     const imagePath = image?.image;
     const reference = storage().ref(`${imagePath}`);
-    console.log('reference', reference?.path);
     const pathToFile = `${imagePath}`;
     await reference.putFile(pathToFile);
     user?.map(i => {
@@ -99,12 +98,10 @@ const Creategroup = ({route, navigation}) => {
       height: hp(17),
       cropping: true,
     }).then(image => {
-      console.log('imageimage', image);
       let imageData = {
         image: image.path,
       };
       setImage(imageData);
-      console.log('Image::', imageData);
       onCameraPress();
     });
   };

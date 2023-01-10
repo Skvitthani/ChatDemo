@@ -18,17 +18,17 @@ const Userprofile = props => {
   const GroupId = Group?.id
   const group = Group?.data;
   const total = group?.GroupData;
-  console.log('total :: ', total);
-  console.log("GroupId==>",GroupId);
+  // console.log('total :: ', total);
+  // console.log("GroupId==>",GroupId);
 
   const admin = total.map(item => {
-    console.log('item', item);
+    // console.log('item', item);
     if (item?.admin) {
       return item?.admin;
     }
   });
-  console.log('admin==>', admin);
-  console.log('group :: ', Group);
+  // console.log('admin==>', admin);
+  // console.log('group :: ', Group);
   // console.log('items :: ', items);
 
   const [showComponent, setShowComponent] = useState(false);

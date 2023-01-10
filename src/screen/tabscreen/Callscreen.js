@@ -13,7 +13,7 @@ import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {ImageConst} from '../../utils/helper/ImageConst';
 import Notificationservice from '../../utils/notification/Notificationservice';
 import uuid from 'react-native-uuid';
-import { hp, wp } from '../../utils/helper/globalfunction/Responsivefont';
+import {hp, wp} from '../../utils/helper/globalfunction/Responsivefont';
 
 const Callscreen = () => {
   const [userData, setUserData] = useState([]);
@@ -47,7 +47,7 @@ const Callscreen = () => {
           setUserData(data);
         });
     } else {
-      console.log('User not available');
+      // console.log('User not available');
     }
   };
 
@@ -65,7 +65,7 @@ const Callscreen = () => {
       Photo: activeUser?.Photo,
     };
     Notificationservice.sendSingleDiveceNotifiaction(notification);
-    console.log('item==>', item);
+    // console.log('item==>', item);
     navigation.navigate('Videocallscreen', {
       CallerId: CallId,
       userName: activeUser,
@@ -82,7 +82,7 @@ const Callscreen = () => {
       Photo: activeUser?.Photo,
     };
     Notificationservice.sendSingleDiveceNotifiaction(notification);
-    console.log('item==>', item);
+    // console.log('item==>', item);
     navigation.navigate('Voicecallscreen', {
       CallerId: CallId,
       userName: item?.name,
@@ -91,6 +91,7 @@ const Callscreen = () => {
   return (
     <View style={style.mainStyle}>
       <FlatList
+        bounces={false}
         data={userData}
         renderItem={({item}) => {
           return (

@@ -51,9 +51,8 @@ const Homescreen = () => {
           });
           setUserData(data);
         });
-     
     } else {
-      console.log('User not available');
+      // console.log('User not available');
     }
   };
 
@@ -79,6 +78,7 @@ const Homescreen = () => {
       <StatusBar backgroundColor={'#2B2D5E'} />
       <View style={{flex: 1}}>
         <FlatList
+          bounces={false}
           data={userData}
           renderItem={({item}) => {
             return (

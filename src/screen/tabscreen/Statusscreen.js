@@ -23,6 +23,7 @@ const Statusscreen = () => {
   const [userFriendsId, setUserFriendsId] = useState([]);
   const [userStatus, setUserStatus] = useState([]);
   const [currentUser, setCurrentUser] = useState([]);
+  const [statusId, setStatusId] = useState([]);
   const [userUID, setUserUID] = useState('');
   const [imageUrl, setImageUrl] = useState('');
 
@@ -64,7 +65,8 @@ const Statusscreen = () => {
             }
           });
           setUserStatus(status);
-          // console.log("Status ::",status);
+
+          console.log('Status ::', status);
           // console.log("User Status ::",userStatus);
         });
     }
@@ -110,15 +112,44 @@ const Statusscreen = () => {
   const uploadStatus = imageURL => {
     firestore()
       .collection('Status')
-      .doc(userUID)
-      .update({
-        Status: firebase.firestore.FieldValue.arrayUnion({
-          status: imageURL,
-          userName: currentUser?.name,
-          currenuserPhoto: currentUser?.Photo,
-          ID: userUID,
-        }),
+      .get()
+      .then(snp => {
+        const StatusId = snp?.docs?.map(snap => {
+          return snap?.id;
+        });
+        setStatusId(StatusId);
       });
+    const matchId = statusId.filter(i => {
+      if (i === userUID) {
+        return i;
+      }
+    });
+    console.log('matchId ::', matchId);
+    if (matchId.length === 0) {
+      firestore()
+        .collection('Status')
+        .doc(userUID)
+        .set({
+          Status: firebase.firestore.FieldValue.arrayUnion({
+            status: imageURL,
+            userName: currentUser?.name,
+            currenuserPhoto: currentUser?.Photo,
+            ID: userUID,
+          }),
+        });
+    } else {
+      firestore()
+        .collection('Status')
+        .doc(userUID)
+        .update({
+          Status: firebase.firestore.FieldValue.arrayUnion({
+            status: imageURL,
+            userName: currentUser?.name,
+            currenuserPhoto: currentUser?.Photo,
+            ID: userUID,
+          }),
+        });
+    }
   };
 
   const onCloseModelPress = () => {
@@ -126,75 +157,74 @@ const Statusscreen = () => {
   };
   return (
     <View style={style.mainView}>
+      <Modal visible={openModel} animationType="slide">
+        <View style={style.modelView}>
+          <Button
+            text={'Choose  From Gallary'}
+            constButtonStyle={style.buttonView}
+            containFontStyle={{marginRight: 30}}
+            onPress={onImageSlectPress}
+          />
+          <Button
+            text={'Cancle'}
+            constButtonStyle={style.buttonView}
+            containFontStyle={{marginRight: 60}}
+            onPress={onCloseModelPress}
+          />
+        </View>
+      </Modal>
       <View>
-        <Modal visible={openModel} animationType="slide">
-          <View style={style.modelView}>
-            <Button
-              text={'Choose  From Gallary'}
-              constButtonStyle={style.buttonView}
-              containFontStyle={{marginRight: 30}}
-              onPress={onImageSlectPress}
-            />
-            <Button
-              text={'Cancle'}
-              constButtonStyle={style.buttonView}
-              containFontStyle={{marginRight: 60}}
-              onPress={onCloseModelPress}
-            />
+        <TouchableOpacity
+          style={style.uploadStatus}
+          onPress={() => setopenModel(true)}>
+          <View style={style.GroupImageView}>
+            {imageUrl ? (
+              <Image
+                source={{uri: imageUrl?.image}}
+                style={style.GroupImageView}
+              />
+            ) : (
+              <Image source={ImageConst.user_png} style={style.user_png} />
+            )}
           </View>
-        </Modal>
-        <View>
-          <TouchableOpacity
-            style={style.uploadStatus}
-            onPress={() => setopenModel(true)}>
-            <View style={style.GroupImageView}>
-              {imageUrl ? (
-                <Image
-                  source={{uri: imageUrl?.image}}
-                  style={style.GroupImageView}
-                />
-              ) : (
-                <Image source={ImageConst.user_png} style={style.user_png} />
+          <View style={style.textView}>
+            <Text style={style.myStatus}>{Stringconst.mySatuts}</Text>
+            <Text style={{marginLeft: wp(3)}}>{Stringconst.taptoupload}</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <Text style={style.recentUpdate}>{Stringconst.recentUpdate}</Text>
+      <FlatList
+        bounces={false}
+        data={userStatus}
+        renderItem={({item}) => {
+          // console.log("item :::",item?.[0]);
+          return (
+            <View>
+              {item !== undefined && (
+                <TouchableOpacity
+                  style={style.statusStyle}
+                  onPress={() =>
+                    navigation.navigate('Statusshowscreen', {
+                      Status: item,
+                    })
+                  }>
+                  <Image
+                    source={{uri: item?.[0]?.status}}
+                    style={style.statusImage}
+                  />
+                  <View style={style.nameAndTime}>
+                    <Text style={style.userName}>{item?.[0]?.userName}</Text>
+                    <Text>
+                      {moment(item?.[0]?.createdAt).format('DD MMM YYYY')}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               )}
             </View>
-            <View style={style.textView}>
-              <Text style={style.myStatus}>{Stringconst.mySatuts}</Text>
-              <Text style={{marginLeft: wp(3)}}>{Stringconst.taptoupload}</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-        <Text style={style.recentUpdate}>{Stringconst.recentUpdate}</Text>
-        <FlatList
-          data={userStatus}
-          renderItem={({item}) => {
-            // console.log("item :::",item?.[0]);
-            return (
-              <View>
-                {item !== undefined && (
-                  <TouchableOpacity
-                    style={style.statusStyle}
-                    onPress={() =>
-                      navigation.navigate('Statusshowscreen', {
-                        Status: item,
-                      })
-                    }>
-                    <Image
-                      source={{uri: item?.[0]?.status}}
-                      style={style.statusImage}
-                    />
-                    <View style={style.nameAndTime}>
-                      <Text style={style.userName}>{item?.[0]?.userName}</Text>
-                      <Text>
-                        {moment(item?.[0]?.createdAt).format('DD MMM YYYY')}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                )}
-              </View>
-            );
-          }}
-        />
-      </View>
+          );
+        }}
+      />
     </View>
   );
 };

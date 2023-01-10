@@ -6,7 +6,7 @@ const Customnotifee = async (title, message, image, CallId) => {
     id: 'default',
     name: 'Default Channel',
   });
-  console.log('channelId++', channelId);
+  // console.log('channelId++', channelId);
   notifee.displayNotification({
     title: title,
     body: message,
@@ -41,7 +41,7 @@ const requestNotification = async (title, message, image) => {
     id: 'default',
     name: 'Default Channel',
   });
-  console.log('channelId++', channelId);
+  // console.log('channelId++', channelId);
   notifee.displayNotification({
     title: title,
     body: message,

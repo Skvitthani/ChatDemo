@@ -70,9 +70,10 @@ const Groupchatscreen = () => {
   return (
     <View style={{flex: 1}}>
       <FlatList
+        bounces={false}
         data={group}
         renderItem={({item}) => {
-          console.log('item:::', item);
+          // console.log('item:::', item);
           return (
             <View>
               {item !== undefined && (
